@@ -286,12 +286,12 @@ Frog::Frog(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
 	this->setSpeed(0.1f);
 	this->setStep(1.4f);
 	this->setRotation(0.0f, 1.0f, 0.0f);
-	this->setRotationAngle(90.0f);
-	this->setScale(0.5f, 0.5f, 0.5f);
+	this->setRotationAngle(0.0f);
+	this->setScale(1.0f, 1.0f, 1.0f);
 	this->setShader(shader);
 	this->setVSML(vsml);
 	// create eye
-	surfRev.createSphere(0.2f, 50);
+	surfRev.createSphere(0.5f, 50);
 	this->setResSurfRev(surfRev);
 
 
@@ -387,46 +387,59 @@ void Frog::draw()
 	float rotAngle = getRotationAngle();
 	Vector3D * rotation = getRotation();
 	Vector3D * scale = getScale();
-
+	
 	getVSML()->loadIdentity(VSMathLib::MODEL);
+
+	// Frog
 	getVSML()->pushMatrix(VSMathLib::MODEL);
 	getVSML()->translate(getPosition()->getX(), getPosition()->getY(), getPosition()->getZ());
 	getVSML()->rotate(rotAngle, rotation->getX(), rotation->getY(), rotation->getZ());
 	getVSML()->scale(scale->getX(), scale->getY(), scale->getZ());
 
-	/** Head **/
+	// head
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(1.0, 1.0, 0.0);
-	getVSML()->rotate(-90.0f, 0.0f, 0.0f, 1.0f);
-	getVSML()->scale(0.7, 0.5, 1.0);
+	getVSML()->translate(0.0f, 0.35, 0.0);
+	getVSML()->scale(0.6f, 0.3f, 0.3f);
 
+	// pyramid
+	getVSML()->pushMatrix(VSMathLib::MODEL);
+	getVSML()->translate(-0.5f, -0.5f, -0.5f);
 	glUseProgram((*getShader()).getProgramIndex());
 
 	getVSML()->matricesToGL();
 	glBindVertexArray(vaoHead);
 	glDrawElements(GL_TRIANGLES, faceCountHead * 3, GL_UNSIGNED_INT, 0);
 	getVSML()->popMatrix(VSMathLib::MODEL);
-	/**********/
+	//pyramid 
 
-	/** Body **/
+	getVSML()->popMatrix(VSMathLib::MODEL);
+	// head
+
+
+	// body
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(0.0, 0.3, 0.0);
-	getVSML()->scale(1.0, 0.7, 1.0);
+	getVSML()->translate(0.0f, -0.05f, 0.0f);
+	getVSML()->scale(0.6f, 0.5f, 0.3f);
 
+	// cube
+	getVSML()->pushMatrix(VSMathLib::MODEL);
+	getVSML()->translate(-0.5f, -0.5f, -0.5f);
 	glUseProgram((*getShader()).getProgramIndex());
 
 	getVSML()->matricesToGL();
 	glBindVertexArray(vaoBody);
 	glDrawElements(GL_TRIANGLES, faceCountBody * 3, GL_UNSIGNED_INT, 0);
 	getVSML()->popMatrix(VSMathLib::MODEL);
-	/**********/
+	// cube 
+
+	getVSML()->popMatrix(VSMathLib::MODEL);
+	// body
 
 
-	/** eyes **/
+	// eyes
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(1.2, 0.8, 0.2);
-	getVSML()->scale(0.45f, 0.45f, 0.45f);
-
+	getVSML()->translate(-0.15f, 0.35f, 0.1f);
+	getVSML()->scale(0.15f, 0.15f, 0.15f);
 	glUseProgram((*getShader()).getProgramIndex());
 
 	getVSML()->matricesToGL();
@@ -434,62 +447,92 @@ void Frog::draw()
 	getVSML()->popMatrix(VSMathLib::MODEL);
 
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(1.2, 0.8, 0.8);
-	getVSML()->scale(0.45f, 0.45f, 0.45f);
-
+	getVSML()->translate(0.15f, 0.35f, 0.1f);
+	getVSML()->scale(0.15f, 0.15f, 0.15f);
 	glUseProgram((*getShader()).getProgramIndex());
 
 	getVSML()->matricesToGL();
 	getResSurfRev().render();
 	getVSML()->popMatrix(VSMathLib::MODEL);
-	/**********/
+	// eyes
+	
 
-
-	/** legs **/
+	// legs
+	// 1
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(0.0, 0.2, -0.1);
-	getVSML()->scale(0.2f, 0.1f, 0.2f);
+	getVSML()->translate(-0.3f, 0.1f, -0.2f);
+	getVSML()->scale(0.2f, 0.2f, 0.1f);
 
+	// cube
+	getVSML()->pushMatrix(VSMathLib::MODEL);
+	getVSML()->translate(-0.5f, -0.5f, -0.5f);
 	glUseProgram((*getShader()).getProgramIndex());
 
 	getVSML()->matricesToGL();
 	glBindVertexArray(vaoBody);
 	glDrawElements(GL_TRIANGLES, faceCountBody * 3, GL_UNSIGNED_INT, 0);
 	getVSML()->popMatrix(VSMathLib::MODEL);
+	//cube
 
+	getVSML()->popMatrix(VSMathLib::MODEL);
+	// 1
+
+	// 2
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(0.8, 0.2, -0.1);
-	getVSML()->scale(0.2f, 0.1f, 0.2f);
+	getVSML()->translate(0.3f, 0.1f, -0.2f);
+	getVSML()->scale(0.2f, 0.2f, 0.1f);
 
+	// cube
+	getVSML()->pushMatrix(VSMathLib::MODEL);
+	getVSML()->translate(-0.5f, -0.5f, -0.5f);
 	glUseProgram((*getShader()).getProgramIndex());
 
 	getVSML()->matricesToGL();
 	glBindVertexArray(vaoBody);
 	glDrawElements(GL_TRIANGLES, faceCountBody * 3, GL_UNSIGNED_INT, 0);
 	getVSML()->popMatrix(VSMathLib::MODEL);
+	// cube
 
+	getVSML()->popMatrix(VSMathLib::MODEL);
+	// 2
+
+	// 3
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(0.0, 0.2, 0.9);
-	getVSML()->scale(0.2f, 0.1f, 0.2f);
+	getVSML()->translate(-0.3f, -0.3f, -0.2f);
+	getVSML()->scale(0.2f, 0.2f, 0.1f);
 
+	// cube
+	getVSML()->pushMatrix(VSMathLib::MODEL);
+	getVSML()->translate(-0.5f, -0.5f, -0.5f);
 	glUseProgram((*getShader()).getProgramIndex());
 
 	getVSML()->matricesToGL();
 	glBindVertexArray(vaoBody);
 	glDrawElements(GL_TRIANGLES, faceCountBody * 3, GL_UNSIGNED_INT, 0);
 	getVSML()->popMatrix(VSMathLib::MODEL);
+	// cube
 
+	getVSML()->popMatrix(VSMathLib::MODEL);
+	// 3
+
+	// 4
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(0.8, 0.2, 0.9);
-	getVSML()->scale(0.2f, 0.1f, 0.2f);
+	getVSML()->translate(0.3f, -0.3f, -0.2f);
+	getVSML()->scale(0.2f, 0.2f, 0.1f);
 
+	// cube
+	getVSML()->pushMatrix(VSMathLib::MODEL);
+	getVSML()->translate(-0.5f, -0.5f, -0.5f);
 	glUseProgram((*getShader()).getProgramIndex());
 
 	getVSML()->matricesToGL();
 	glBindVertexArray(vaoBody);
 	glDrawElements(GL_TRIANGLES, faceCountBody * 3, GL_UNSIGNED_INT, 0);
 	getVSML()->popMatrix(VSMathLib::MODEL);
-	/**********/
+	// cube
+
+	getVSML()->popMatrix(VSMathLib::MODEL);
+	// 4
 
 	getVSML()->popMatrix(VSMathLib::MODEL);
 

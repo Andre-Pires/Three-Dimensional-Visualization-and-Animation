@@ -47,10 +47,10 @@ void DynamicObject::setDirection(int dir)
 	direction = dir;
 }
 
-void DynamicObject::setBoundaries(float leftBound, float rightBound)
+void DynamicObject::setBoundaries(float leftMoveBound, float rightMoveBound)
 {
-	left = leftBound;
-	right = rightBound;
+	left = leftMoveBound;
+	right = rightMoveBound;
 }
 
 void DynamicObject::move()
@@ -62,8 +62,8 @@ void DynamicObject::move()
 	{
 		if (posX <= left)
 		{
-			direction = RIGHT;
-			setPosition(getPosition()->getX() + getSpeed(), getPosition()->getY(), getPosition()->getZ());
+			setPosition(right, getPosition()->getY(), getPosition()->getZ());
+			setAlive(false);
 		}
 		else setPosition(getPosition()->getX() - getSpeed(), getPosition()->getY(), getPosition()->getZ());
 	}
@@ -71,14 +71,19 @@ void DynamicObject::move()
 	{
 		if (posX >= right)
 		{
-			direction = LEFT;
-			setPosition(getPosition()->getX() - getSpeed(), getPosition()->getY(), getPosition()->getZ());
+			setPosition(left, getPosition()->getY(), getPosition()->getZ());
+			setAlive(false);
 		}
 		else setPosition(getPosition()->getX() + getSpeed(), getPosition()->getY(), getPosition()->getZ());
 	}
 }
 
 void DynamicObject::speedUp()
+{
+	setSpeed(getSpeed() * getStep());
+}
+
+void DynamicObject::hasCollided(Vector3D pos)
 {
 	setSpeed(getSpeed() * getStep());
 }

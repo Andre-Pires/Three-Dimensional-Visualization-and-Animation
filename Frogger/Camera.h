@@ -4,7 +4,7 @@
 #define ORTHO 1
 #define PERSP 2
 #define FIRSTPERS 3
-class Camera
+class Camera : public Entity
 {
 	Vector3D * upCam;
 	Vector3D * atCam;
@@ -18,7 +18,8 @@ public:
 	Camera(VSMathLib *vsml, Frog * frogger);
 	~Camera();
 	void update(int camState, int mouseState);
-	void computeProjectionMatrix();	void computeVisualizationMatrix();
+	void computeProjectionMatrix();
+	void computeVisualizationMatrix();
 	void setRatio(float ratio);
 	void setAt(float x, float y, float z);
 };

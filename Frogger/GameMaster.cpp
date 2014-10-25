@@ -15,18 +15,22 @@ VSMathLib *vsml;
 VSShaderLib shader;
 VSResSurfRevLib mySurfRev;
 Camera * camera;
-Truck * truck;
+
+/** Scenery **/
 Border * border;
 Border * border2;
 Margin * margin;
 Margin * margin2;
 Road * road;
 River * river;
+
+/** Movables **/
 Frog * frog;
-Turtle * turtle;
-Car * car;
-Log * stem;
-Bus * bus;
+Truck * truck[5];
+Turtle * turtle[5];
+Car * cars[5];
+Bus * buses[5];
+Log * stem[5];
 
 // Camera Position
 float camX, camY, camZ;
@@ -66,31 +70,39 @@ unsigned int FrameCount = 0;
 
 void speedUpCharacters(int value)
 {
-	turtle->speedUp();
-	stem->speedUp();
-	truck->speedUp();
-	car->speedUp();
-	bus->speedUp();
+
+	for (int i = 0; i < 5; i++)
+	{
+		turtle[i]->speedUp();
+		stem[i]->speedUp();
+		truck[i]->speedUp();
+		cars[i]->speedUp();
+		buses[i]->speedUp();
+	}
 
 	glutTimerFunc(20000, speedUpCharacters, 0);
 }
 
 void moveCharacters(int value)
 {
-	if(stem->isAlive())
-		stem->move();
 
-	if (turtle->isAlive()) 
-		turtle->move();
+	for (int i = 0; i < 5; i++)
+	{
+		if(stem[i]->isAlive())
+			stem[i]->move();
 
-	if (truck->isAlive())
-		truck->move();
+		if (turtle[i]->isAlive()) 
+			turtle[i]->move();
 
-	if (car->isAlive())
-		car->move();
+		if (truck[i]->isAlive())
+			truck[i]->move();
 
-	if (bus->isAlive())
-		bus->move();
+		if (cars[i]->isAlive())
+			cars[i]->move();
+
+		if (buses[i]->isAlive())
+			buses[i]->move();
+	}
 
 	glutTimerFunc(25, moveCharacters, 0);
 }
@@ -126,20 +138,24 @@ void drawObjects()
 
 	frog->draw();
 
-	if (stem->isAlive())
-		stem->draw();
 
-	if (turtle->isAlive())
-		turtle->draw();
+	for (int i = 0; i < 5; i++)
+	{
+		if (stem[i]->isAlive())
+			stem[i]->draw();
 
-	if (truck->isAlive())
-		truck->draw();
+		if (turtle[i]->isAlive())
+			turtle[i]->draw();
 
-	if (car->isAlive())
-		car->draw();
+		if (truck[i]->isAlive())
+			truck[i]->draw();
 
-	if (bus->isAlive())
-		bus->draw();
+		if (cars[i]->isAlive())
+			cars[i]->draw();
+
+		if (buses[i]->isAlive())
+			buses[i]->draw();
+	}
 }
 
 void initObjects()
@@ -152,19 +168,22 @@ void initObjects()
 	border2 = new Border(vsml, &shader, 0.0f, -6.0f, 0.0f);
 	road = new Road(vsml, &shader, 0.0f, -3.0f, 0.0f);
 
-	bus = new Bus(vsml, &shader, -11.5f, -3.6f, 1.5f);
-	car = new Car(vsml, &shader, 12.2f, -2.4f, 1.1f);
-	truck = new Truck(vsml, &shader, -12.0f, -1.2f, 1.4);
-	stem = new Log(vsml, &shader, -12.0f, 3.6f, 0.0f);
+	for (int i = 0; i < 5; i++)
+	{
+		buses[i] = new Bus(vsml, &shader, -11.5f, -3.6f, 1.5f);
+		cars[i] = new Car(vsml, &shader, 12.2f, -2.4f, 1.1f);
+		truck[i] = new Truck(vsml, &shader, -12.0f, -1.2f, 1.4f);
+		stem[i] = new Log(vsml, &shader, -12.0f, 3.6f, 0.0f);
+		turtle[i] = new Turtle(vsml, &shader, 7.4f, -0.4f, -2.5f);
+	}
 
 
 
-	frog = new Frog(vsml, &shader, 0.0, -0.2, 5.85);
+	frog = new Frog(vsml, &shader, 0.0f, -6.0f, 1.0f);
 	frogJump = 0;
 	frogRot = 1;
 	//frogMouseMove = 0;
 
-	turtle = new Turtle(vsml, &shader, 7.4, -0.4, -2.5);
 }
 
 
@@ -189,7 +208,7 @@ GLuint setupShaders() {
 
 	shader.prepareProgram();
 
-	printf("InfoLog for Hello World Shader\n%s\n\n", shader.getAllInfoLogs().c_str());
+	printf("InfoLog for shader\n%s\n\n", shader.getAllInfoLogs().c_str());
 
 	return(shader.isProgramValid());
 }
@@ -267,29 +286,57 @@ void giveLife(int value)
 {
 	int randomValue = rand() % 100;
 
-	if (randomValue < 20){ //create object -- no futuro dar outro valor rand ao randomValue para escolher um objecto qlq
-		
-		turtle->setAlive(true);
+	if (randomValue < 20){
+		for (int i = 0; i < 5; i++)
+		{
+			if (!turtle[i]->isAlive()){
+				turtle[i]->setAlive(true);
+				break;
+			}
+		}
 	}
 
-	if (randomValue >=20 && randomValue < 40){ //create object -- no futuro dar outro valor rand ao randomValue para escolher um objecto qlq
-
-		stem->setAlive(true);
+	if (randomValue >=20 && randomValue < 40){
+		for (int i = 0; i < 5; i++)
+		{
+			if (!stem[i]->isAlive()){
+				stem[i]->setAlive(true);
+				break;
+			}
+		}
 	}
 
-	if (randomValue >= 40 && randomValue < 60){ //create object -- no futuro dar outro valor rand ao randomValue para escolher um objecto qlq
+	if (randomValue >= 40 && randomValue < 60){
 
-		truck->setAlive(true);
+		for (int i = 0; i < 5; i++)
+		{
+			if (!truck[i]->isAlive()){
+				truck[i]->setAlive(true);
+				break;
+			}
+		}
 	}
 
-	if (randomValue >= 60 && randomValue < 80){ //create object -- no futuro dar outro valor rand ao randomValue para escolher um objecto qlq
+	if (randomValue >= 60 && randomValue < 80){
 
-		car->setAlive(true);
+		for (int i = 0; i < 5; i++)
+		{
+			if (!cars[i]->isAlive()){
+				cars[i]->setAlive(true);
+				break;
+			}
+		}
 	}
 
 	if (randomValue >= 80 && randomValue < 100){
-
-		bus->setAlive(true);
+		
+		for (int i = 0; i < 5; i++)
+		{
+			if (!buses[i]->isAlive()){
+				buses[i]->setAlive(true);
+				break;
+			}
+		}
 	}
 	
 
