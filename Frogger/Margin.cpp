@@ -1,5 +1,4 @@
 #include "Margin.h"
-#include "StaticObject.h"
 
 int verticeCountMargin = 24;
 int faceCountMargin = 12;
@@ -69,20 +68,6 @@ float normalsMargin[] = {
 };
 
 float colorsMargin[] = {
-	0.44f, 0.26f, 0.08f, 1.0f,
-	0.44f, 0.26f, 0.08f, 1.0f,
-	0.44f, 0.26f, 0.08f, 1.0f,
-	0.44f, 0.26f, 0.08f, 1.0f,
-
-	0.44f, 0.26f, 0.08f, 1.0f,
-	0.44f, 0.26f, 0.08f, 1.0f,
-	0.44f, 0.26f, 0.08f, 1.0f,
-	0.44f, 0.26f, 0.08f, 1.0f,
-
-	0.3f, 0.9f, 0.0f, 1.0f,
-	0.3f, 0.9f, 0.0f, 1.0f,
-	0.3f, 0.9f, 0.0f, 1.0f,
-	0.3f, 0.9f, 0.0f, 1.0f,
 
 	0.3f, 0.9f, 0.0f, 1.0f,
 	0.3f, 0.9f, 0.0f, 1.0f,
@@ -98,6 +83,21 @@ float colorsMargin[] = {
 	0.3f, 0.9f, 0.0f, 1.0f,
 	0.3f, 0.9f, 0.0f, 1.0f,
 	0.3f, 0.9f, 0.0f, 1.0f,
+
+	0.44f, 0.26f, 0.08f, 1.0f,
+	0.44f, 0.26f, 0.08f, 1.0f,
+	0.44f, 0.26f, 0.08f, 1.0f,
+	0.44f, 0.26f, 0.08f, 1.0f,
+
+	0.3f, 0.9f, 0.0f, 1.0f,
+	0.3f, 0.9f, 0.0f, 1.0f,
+	0.3f, 0.9f, 0.0f, 1.0f,
+	0.3f, 0.9f, 0.0f, 1.0f,
+
+	0.44f, 0.26f, 0.08f, 1.0f,
+	0.44f, 0.26f, 0.08f, 1.0f,
+	0.44f, 0.26f, 0.08f, 1.0f,
+	0.44f, 0.26f, 0.08f, 1.0f
 
 
 
@@ -160,7 +160,7 @@ Margin::Margin(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
 	this->setPosition(x, y, z);
 	this->setRotation(0.0f, 0.0f, 0.0f);
 	this->setRotationAngle(0.0f);
-	this->setScale(16.0f, 1.0f, 1.0f);
+	this->setScale(26.0f, 1.2f, 1.0f);
 	this->setShader(shader);
 	this->setVSML(vsml);
 
@@ -215,17 +215,24 @@ void Margin::draw()
 
 	Vector3D * scale = getScale();
 
+	getVSML()->loadIdentity(VSMathLib::MODEL);
+
 	// Margin
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->loadIdentity(VSMathLib::MODEL);
 	getVSML()->translate(getPosition()->getX(), getPosition()->getY(), getPosition()->getZ());
 	getVSML()->scale(scale->getX(), scale->getY(), scale->getZ());
-	glUseProgram((*getShader()).getProgramIndex());
-	// send matrices to uniform buffer
 
+	// cube
+	getVSML()->pushMatrix(VSMathLib::MODEL);
+	getVSML()->translate(-0.5f, -0.5f, -0.5f);
+	glUseProgram((*getShader()).getProgramIndex());
+	
 	getVSML()->matricesToGL();
 	glBindVertexArray(vaoMargin);
 	glDrawElements(GL_TRIANGLES, faceCountMargin * 3, GL_UNSIGNED_INT, 0);
+	getVSML()->popMatrix(VSMathLib::MODEL);
+	// cube
+
 	getVSML()->popMatrix(VSMathLib::MODEL);
 	// Margin
 }

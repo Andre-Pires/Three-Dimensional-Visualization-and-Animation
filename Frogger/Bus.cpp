@@ -1,6 +1,4 @@
 #include "Bus.h"
-#include "DynamicObject.h"
-#include <iostream>
 
 int verticeCountBus = 24;
 int faceCountBus = 12;
@@ -197,15 +195,15 @@ Bus::Bus(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
 	this->setPosition(x, y, z);
 	this->setSpeed(0.05f);
 	this->setStep(1.4f);
-	this->setRotation(0.0f, 1.0f, 0.0f);
+	this->setRotation(0.0f, 0.0f, 0.0f);
 	this->setRotationAngle(0.0f);
-	this->setScale(0.8f, 0.8f, 0.8f);
+	this->setScale(1.0f, 1.0f, 1.0f);
 	this->setShader(shader);
 	this->setVSML(vsml);
 	// create wheel
-	surfRev.createCylinder(0.5f, 0.3f, 50);
+	surfRev.createCylinder(1.0f, 0.3f, 50);
 	this->setResSurfRev(surfRev);
-	this->setBoundaries(-8.2f, 5.8f);
+	this->setBoundaries(-11.5f, 11.5f);
 	this->setDirection(RIGHT);
 
 	glGenVertexArrays(1, &vaoBus);
@@ -299,80 +297,82 @@ void Bus::draw()
 	Vector3D * scale = getScale();
 
 	getVSML()->loadIdentity(VSMathLib::MODEL);
+
+	// Bus
 	getVSML()->pushMatrix(VSMathLib::MODEL);
 	getVSML()->translate(getPosition()->getX(), getPosition()->getY(), getPosition()->getZ());
-	getVSML()->rotate(rotAngle, rotation->getX(), rotation->getY(), rotation->getZ());
-	getVSML()->scale(scale->getX(), scale->getY(), scale->getZ());
+	//getVSML()->rotate(rotAngle, rotation->getX(), rotation->getY(), rotation->getZ());
+	//getVSML()->scale(scale->getX(), scale->getY(), scale->getZ());
 
-	// base do autocarro
+
+	// body
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	//getVSML()->loadIdentity(VSMathLib::MODEL);
-	getVSML()->scale(3.0f, 1.5f, 1.0f);
+	getVSML()->scale(3.0f, 0.8f, 1.4f);
 
+	// cube
+	getVSML()->pushMatrix(VSMathLib::MODEL);
+	getVSML()->translate(-0.5f, -0.5f, -0.5f);
 	glUseProgram((*getShader()).getProgramIndex());
-	// send matrices to uniform buffer
 
 	getVSML()->matricesToGL();
 	glBindVertexArray(vaoBus);
 	glDrawElements(GL_TRIANGLES, faceCountBus * 3, GL_UNSIGNED_INT, 0);
 	getVSML()->popMatrix(VSMathLib::MODEL);
-	// base do autocarro
+	// cube
 
-	// vidros do autocarro
+	getVSML()->popMatrix(VSMathLib::MODEL);
+	// body
+
+
+	// window
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	//getVSML()->loadIdentity(VSMathLib::MODEL);
-	getVSML()->translate(0.5, 0.7, -0.0001);
-	getVSML()->scale(2.5001f, 0.5f, 1.0002f);
+	getVSML()->translate(0.2f, 0.0f, 0.35f);
+	getVSML()->scale(2.6004f, 0.8006f, 0.5f);
+
+	// cube
+	getVSML()->pushMatrix(VSMathLib::MODEL);
+	getVSML()->translate(-0.5f, -0.5f, -0.5f);
 	glUseProgram((*getShader()).getProgramIndex());
-	// send matrices to uniform buffer
 
 	getVSML()->matricesToGL();
 	glBindVertexArray(vaoBus2);
 	glDrawElements(GL_TRIANGLES, faceCountBus * 3, GL_UNSIGNED_INT, 0);
 	getVSML()->popMatrix(VSMathLib::MODEL);
-	// vidros do autocarro
+	// cube
+	
+	getVSML()->popMatrix(VSMathLib::MODEL);
+	// window
 
-	//rodas de trás do autocarro
+
+	// back wheels
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(0.5, 0, 0.5);
-	getVSML()->rotate(-90.0f, 1.0f, 0.0f, 0.0f);
-	getVSML()->scale(1.0f, 2.5f, 1.0f);
-
+	getVSML()->translate(-1.0f, 0.0f, -0.7f);
 	glUseProgram((*getShader()).getProgramIndex());
-	// send matrices to uniform buffer
+
 	getVSML()->matricesToGL();
 	getResSurfRev().render();
 	getVSML()->popMatrix(VSMathLib::MODEL);
 
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(1.2, 0, 0.5);
-	getVSML()->rotate(-90.0f, 1.0f, 0.0f, 0.0f);
-	getVSML()->scale(1.0f, 2.5f, 1.0f);
-
+	getVSML()->translate(-0.3f, 0.0f, -0.7f);
 	glUseProgram((*getShader()).getProgramIndex());
-	// send matrices to uniform buffer
+
 	getVSML()->matricesToGL();
 	getResSurfRev().render();
 	getVSML()->popMatrix(VSMathLib::MODEL);
+	// back wheels
 
-	//rodas de trás do autocarro
-
-	//rodas da frente do autocarro
+	// front wheels
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(2.5, 0, 0.5);
-	getVSML()->rotate(-90.0f, 1.0f, 0.0f, 0.0f);
-	getVSML()->scale(1.0f, 2.5f, 1.0f);
-
+	getVSML()->translate(1.0f, 0.0f, -0.7f);
 	glUseProgram((*getShader()).getProgramIndex());
-	// send matrices to uniform buffer
+
 	getVSML()->matricesToGL();
 	getResSurfRev().render();
 	getVSML()->popMatrix(VSMathLib::MODEL);
+	// front wheels
 
-	//rodas da frente do autocarro
-
-	getVSML()->translate(getPosition()->getX(), getPosition()->getY(), getPosition()->getZ());
 	getVSML()->popMatrix(VSMathLib::MODEL);
-
+	// Bus
 
 }

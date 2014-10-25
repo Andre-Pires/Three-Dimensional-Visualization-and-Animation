@@ -156,7 +156,7 @@ River::River(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
 	this->setPosition(x, y, z);
 	this->setRotation(0.0f, 0.0f, 0.0f);
 	this->setRotationAngle(0.0f);
-	this->setScale(16.0f, 0.5f, 3.0f);
+	this->setScale(26.0f, 3.6f, 0.5f);
 	this->setShader(shader);
 	this->setVSML(vsml);
 
@@ -210,17 +210,24 @@ void River::draw()
 {
 	Vector3D * scale = getScale();
 
+	getVSML()->loadIdentity(VSMathLib::MODEL);
+
 	// River
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->loadIdentity(VSMathLib::MODEL);
 	getVSML()->translate(getPosition()->getX(), getPosition()->getY(), getPosition()->getZ());
 	getVSML()->scale(scale->getX(), scale->getY(), scale->getZ());
+
+	// cube
+	getVSML()->pushMatrix(VSMathLib::MODEL);
+	getVSML()->translate(-0.5f, -0.5f, -0.5f);
 	glUseProgram((*getShader()).getProgramIndex());
-	// send matrices to uniform buffer
 
 	getVSML()->matricesToGL();
 	glBindVertexArray(vaoRiver);
 	glDrawElements(GL_TRIANGLES, faceCountRiver * 3, GL_UNSIGNED_INT, 0);
+	getVSML()->popMatrix(VSMathLib::MODEL);
+	//cube
+
 	getVSML()->popMatrix(VSMathLib::MODEL);
 	// River
 }

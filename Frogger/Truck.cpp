@@ -165,7 +165,7 @@ Truck::Truck(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
 	// create wheel
 	surfRev.createCylinder(1.0f, 0.3f, 50);
 	this->setResSurfRev(surfRev);
-	this->setBoundaries(-5.8f, 8.2f);
+	this->setBoundaries(-12.0f, 12.0f);
 	this->setDirection(RIGHT);
 
 	glGenVertexArrays(1, &vaoTruck);
@@ -217,16 +217,18 @@ Truck::~Truck()
 void Truck::draw()
 {
 	getVSML()->loadIdentity(VSMathLib::MODEL);
+	
+	// Truck
 	getVSML()->pushMatrix(VSMathLib::MODEL);
 	getVSML()->translate(getPosition()->getX(), getPosition()->getY(), getPosition()->getZ());
 
 
-	// base do camiao
+	// body
 	getVSML()->pushMatrix(VSMathLib::MODEL);
 	getVSML()->translate(0.0f, 0.0f, -0.3f);
 	getVSML()->scale(2.0f, 0.8f, 0.6f);
 
-	//cubo
+	// cube
 	getVSML()->pushMatrix(VSMathLib::MODEL);
 	getVSML()->translate(-0.5f, -0.5f, -0.5f);
 	glUseProgram((*getShader()).getProgramIndex());
@@ -234,19 +236,19 @@ void Truck::draw()
 	getVSML()->matricesToGL();
 	glBindVertexArray(vaoTruck);
 	glDrawElements(GL_TRIANGLES, faceCountTruck * 3, GL_UNSIGNED_INT, 0);
+	getVSML()->popMatrix(VSMathLib::MODEL);
+	// cube
 
 	getVSML()->popMatrix(VSMathLib::MODEL);
-
-	getVSML()->popMatrix(VSMathLib::MODEL);
-	// base do camiao
+	// body
 
 
-	// topo do camiao
+	// top
 	getVSML()->pushMatrix(VSMathLib::MODEL);
 	getVSML()->translate(-0.25f, 0.0f, 0.3f);
 	getVSML()->scale(1.5f, 0.8f, 0.6f);
 
-	//cubo
+	// cube
 	getVSML()->pushMatrix(VSMathLib::MODEL);
 	getVSML()->translate(-0.5f, -0.5f, -0.5f);
 	glUseProgram((*getShader()).getProgramIndex());
@@ -254,39 +256,36 @@ void Truck::draw()
 	getVSML()->matricesToGL();
 	glBindVertexArray(vaoTruck);
 	glDrawElements(GL_TRIANGLES, faceCountTruck * 3, GL_UNSIGNED_INT, 0);
+	getVSML()->popMatrix(VSMathLib::MODEL);
+	// cube
 
 	getVSML()->popMatrix(VSMathLib::MODEL);
-
-	getVSML()->popMatrix(VSMathLib::MODEL);
-	// topo do camiao
+	// top
 
 
-	//rodas de trás do camiao
+	// back wheels
 	getVSML()->pushMatrix(VSMathLib::MODEL);
 	getVSML()->translate(-0.5f, 0.0f, -0.6f);
-
 	glUseProgram((*getShader()).getProgramIndex());
 
 	getVSML()->matricesToGL();
 	getResSurfRev().render();
-
 	getVSML()->popMatrix(VSMathLib::MODEL);
-	//rodas da frente do camiao
+	// back wheels
 
-	//rodas da frente do camiao
+
+	// front wheels
 	getVSML()->pushMatrix(VSMathLib::MODEL);
 	getVSML()->translate(0.5f, 0.0f, -0.6f);
-
 	glUseProgram((*getShader()).getProgramIndex());
 
 	getVSML()->matricesToGL();
 	getResSurfRev().render();
+	getVSML()->popMatrix(VSMathLib::MODEL);
+	// front wheels
 
 	getVSML()->popMatrix(VSMathLib::MODEL);
-	//rodas da tras do camiao
-
-
-	getVSML()->popMatrix(VSMathLib::MODEL);
+	// Truck
 }
 
 

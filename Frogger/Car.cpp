@@ -153,17 +153,17 @@ Car::Car(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
 	VSResSurfRevLib surfRev;
 
 	this->setPosition(x, y, z);
-	this->setSpeed(0.1f);
+	this->setSpeed(0.01f);
 	this->setStep(1.4f);
-	this->setRotation(0.0f, 1.0f, 0.0f);
-	this->setRotationAngle(90.0f);
-	this->setScale(0.7f, 0.8f, 0.8f);
+	this->setRotation(0.0f, 0.0f, 1.0f);
+	this->setRotationAngle(180.0f);
+	this->setScale(1.0f, 1.0f, 1.0f);
 	this->setShader(shader);
 	this->setVSML(vsml);
 	// create wheel
-	surfRev.createCylinder(0.5f, 0.3f, 50);
+	surfRev.createCylinder(1.0f, 0.2f, 50);
 	this->setResSurfRev(surfRev);
-	this->setBoundaries(-8.2f, 6.7f);
+	this->setBoundaries(-12.25f, 12.25f);
 	this->setDirection(LEFT);
 	
 	glGenVertexArrays(1, &vaoCar);
@@ -213,52 +213,77 @@ void Car::draw()
 	Vector3D * rotation = getRotation();
 	Vector3D * scale = getScale();
 
-
 	getVSML()->loadIdentity(VSMathLib::MODEL);
+
+	// Car
 	getVSML()->pushMatrix(VSMathLib::MODEL);
 	getVSML()->translate(getPosition()->getX(), getPosition()->getY(), getPosition()->getZ());
 	getVSML()->rotate(rotAngle, rotation->getX(), rotation->getY(), rotation->getZ());
 	getVSML()->scale(scale->getX(), scale->getY(), scale->getZ());
 
+	// body
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->scale(1.0, 0.5, 2.0);
+	getVSML()->translate(0.0f, 0.0f, -0.15);
+	getVSML()->scale(1.6f, 0.8f, 0.4f);
+
+	// cube
+	getVSML()->pushMatrix(VSMathLib::MODEL);
+	getVSML()->translate(-0.5f, -0.5f, -0.5f);
 	glUseProgram((*getShader()).getProgramIndex());
-	// send matrices to uniform buffer
+
 	getVSML()->matricesToGL();
 	glBindVertexArray(vaoCar);
 	glDrawElements(GL_TRIANGLES, faceCountCar * 3, GL_UNSIGNED_INT, 0);
 	getVSML()->popMatrix(VSMathLib::MODEL);
+	// cube
 
+	getVSML()->popMatrix(VSMathLib::MODEL);
+	// body
+
+
+	// top
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(0.0, 0.5, 0.6);
-	getVSML()->scale(1.0, 0.3, 1.0);
+	getVSML()->translate(-0.1f, 0.0f, 0.2f);
+	getVSML()->scale(0.8f, 0.8f, 0.3f);
+
+	// cube
+	getVSML()->pushMatrix(VSMathLib::MODEL);
+	getVSML()->translate(-0.5f, -0.5f, -0.5f);
 	glUseProgram((*getShader()).getProgramIndex());
-	// send matrices to uniform buffer
+
 	getVSML()->matricesToGL();
 	glBindVertexArray(vaoCar);
 	glDrawElements(GL_TRIANGLES, faceCountCar * 3, GL_UNSIGNED_INT, 0);
 	getVSML()->popMatrix(VSMathLib::MODEL);
+	// cube
 
+	getVSML()->popMatrix(VSMathLib::MODEL);
+	// top
+
+
+	// back wheels
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(0.5, 0.0, 0.5);
-	getVSML()->rotate(90.0, 0.0, 0.0, 1.0);
-	getVSML()->scale(1.0f, 2.3f, 1.0f);
+	getVSML()->translate(-0.4f, 0.0f, -0.35f);
 	glUseProgram((*getShader()).getProgramIndex());
-	// send matrices to uniform buffer
+
 	getVSML()->matricesToGL();
 	getResSurfRev().render();
 	getVSML()->popMatrix(VSMathLib::MODEL);
+	// back wheels
 
+
+	// front wheels
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(0.5, 0.0, 1.5);
-	getVSML()->rotate(90.0, 0.0, 0.0, 1.0);
-	getVSML()->scale(1.0f, 2.3f, 1.0f);
+	getVSML()->translate(0.3f, 0.0f, -0.35f);
 	glUseProgram((*getShader()).getProgramIndex());
-	// send matrices to uniform buffer
+
 	getVSML()->matricesToGL();
 	getResSurfRev().render();
 	getVSML()->popMatrix(VSMathLib::MODEL);
+	// front wheels
+
 	getVSML()->popMatrix(VSMathLib::MODEL);
+	// Car
 }
 
 

@@ -84,6 +84,7 @@
   <ItemGroup>
     <ClInclude Include="Border.h" />
     <ClInclude Include="Bus.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Car.h" />
     <ClInclude Include="cube.h" />
     <ClInclude Include="DynamicObject.h" />
@@ -112,6 +113,7 @@
   <ItemGroup>
     <ClCompile Include="Border.cpp" />
     <ClCompile Include="Bus.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Car.cpp" />
     <ClCompile Include="DynamicObject.cpp" />
     <ClCompile Include="Entity.cpp" />

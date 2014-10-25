@@ -4,6 +4,7 @@
 /** Includes **/
 #include "GameMaster.h"
 #include "Entity.h"
+#include "Camera.h"
 
 
 /** Definitions **/
@@ -13,6 +14,7 @@
 VSMathLib *vsml;
 VSShaderLib shader;
 VSResSurfRevLib mySurfRev;
+Camera * camera;
 Truck * truck;
 Border * border;
 Border * border2;
@@ -28,15 +30,14 @@ Bus * bus;
 
 // Camera Position
 float camX, camY, camZ;
-float ratio;
-int camera;
+int camState;
 
 //Frog stuff
 int frogJump, frogRot;
 
 // Mouse Tracking Variables
 int startX, startY;
-int tracking = 0;
+int mouseState = 0;
 
 // Camera Spherical Coordinates
 float alpha = -43.0f, beta = 48.0f;
@@ -61,6 +62,7 @@ unsigned int FrameCount = 0;
 /*                                                       */
 /*                        GAME	                         */
 /*                                                       */
+
 
 void speedUpCharacters(int value)
 {
@@ -142,29 +144,27 @@ void drawObjects()
 
 void initObjects()
 {
-	truck = new Truck(vsml, &shader, -6.7, 0.0, 1.9);
+	margin = new Margin(vsml, &shader, 0.0f, 1.2f, 0.0f);
+	margin2 = new Margin(vsml, &shader, 0.0f, 6.0f, 0.0f);
+	river = new River(vsml, &shader, 0.0f, 3.6f, -0.25f);
+
+	border = new Border(vsml, &shader, 0.0f, 0.0f, 0.0f);
+	border2 = new Border(vsml, &shader, 0.0f, -6.0f, 0.0f);
+	road = new Road(vsml, &shader, 0.0f, -3.0f, 0.0f);
+
+	bus = new Bus(vsml, &shader, -11.5f, -3.6f, 1.5f);
+	car = new Car(vsml, &shader, 12.2f, -2.4f, 1.1f);
+	truck = new Truck(vsml, &shader, -12.0f, -1.2f, 1.4);
+	stem = new Log(vsml, &shader, -12.0f, 3.6f, 0.0f);
+
+
 
 	frog = new Frog(vsml, &shader, 0.0, -0.2, 5.85);
 	frogJump = 0;
 	frogRot = 1;
 	//frogMouseMove = 0;
 
-	car = new Car(vsml, &shader, 6.7, 0, 2.8);
-
-	road = new Road(vsml, &shader, -8.0, -1.23, 1.0);
-	river = new River(vsml, &shader, -8.0, -1.23, -4.0);
-
-	border = new Border(vsml, &shader, -8.0, -1.23, 5.0);
-	border2 = new Border(vsml, &shader, -8.0, -1.23, 0.0);
-
-	stem = new Log(vsml, &shader, -6.8, -0.5, -3.5);
-
-	margin = new Margin(vsml, &shader, -8.0, -1.23, -1.0);
-	margin2 = new Margin(vsml, &shader, -8.0, -1.23, -5.0);
-
 	turtle = new Turtle(vsml, &shader, 7.4, -0.4, -2.5);
-
-	bus = new Bus(vsml, &shader, -8.2, 0, 3.0);
 }
 
 
@@ -200,50 +200,16 @@ GLuint setupShaders() {
 /*                        DISPLAY                        */
 /*                                                       */
 
-void updateCamera(){
-
-	if (camera == 1){
-		vsml->loadIdentity(VSMathLib::PROJECTION);
-		//vsml->rotate(VSMathLib::PROJECTION, 90.0, -1.0, 0.0, 0.0);
-		vsml->ortho(-8.0f*ratio, 8.0f*ratio, -8.0f, 8.0f, -6.0f, 6.0f);
-		vsml->loadIdentity(VSMathLib::VIEW);
-		vsml->loadIdentity(VSMathLib::MODEL);
-	}
-	else if (camera == 2){
-		vsml->loadIdentity(VSMathLib::PROJECTION);
-		vsml->perspective(45.0f, ratio, 0.1f, 100.0f);
-		vsml->loadIdentity(VSMathLib::VIEW);
-		vsml->loadIdentity(VSMathLib::MODEL);
-		// set the camera using a function similar to gluLookAt
-		vsml->lookAt(0.0f, -16.0f, 16.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f);
-	}
-	else if (camera == 3){
-		vsml->loadIdentity(VSMathLib::PROJECTION);
-		vsml->perspective(45.0f, ratio, 0.1f, 100.0f);
-		vsml->loadIdentity(VSMathLib::VIEW);
-		vsml->loadIdentity(VSMathLib::MODEL);
-		// set the camera using a function similar to gluLookAt
-
-		if (tracking == 1) //testing to see if user is looking around
-		{
-			vsml->lookAt(frog->getPosition()->getX() + 0.25f, 0.5f, frog->getPosition()->getZ() + 1, camX, camY, frog->getPosition()->getZ() - 5, 0, 1, 0);
-		}
-		else{
-			vsml->lookAt(frog->getPosition()->getX() + 0.25f, 0.5f, frog->getPosition()->getZ() + 1, frog->getPosition()->getX() + 0.25f, frog->getPosition()->getY() + 0.25f, frog->getPosition()->getZ() - 5, 0, 1, 0);
-		}
-	}
-
-	glutPostRedisplay();
-}
-
-
 void changeSize(int w, int h) {
+
+	float ratio;
 	// Prevent a divide by zero, when window is too short
 	// (you cant make a window of zero width).
 	if (h == 0)
 		h = 1;
 	ratio = w * 1.0 / h;
 
+	camera->setRatio(ratio);
 	// Reset Matrix
 	vsml->loadIdentity(VSMathLib::PROJECTION);
 	
@@ -251,7 +217,7 @@ void changeSize(int w, int h) {
 	glViewport(0, 0, w, h);
 
 	// Set the correct perspective.
-	updateCamera();
+	camera->update(camState, mouseState);
 
 }
 
@@ -264,8 +230,8 @@ void renderScene(void) {
 	//moves the frog acording to user input
 	moveFrog();
 
-	if (camera == 3 && hasFrogCamMoved){
-		updateCamera();
+	if (camState == 3 && hasFrogCamMoved){
+		camera->update(camState, mouseState);
 		hasFrogCamMoved = false;
 	}
 	//draws all objects on scene
@@ -344,18 +310,18 @@ void processKeys(unsigned char key, int xx, int yy)
 	switch (key) {
 
 	case 49:
-		camera = 1;
-		updateCamera();
+		camState = 1;
+		camera->update(camState, mouseState);
 		break;
 
 	case 50:
-		camera = 2;
-		updateCamera();
+		camState = 2;
+		camera->update(camState, mouseState);
 		break;
 
 	case 51:
-		camera = 3;
-		updateCamera();
+		camState = 3;
+		camera->update(camState, mouseState);
 		break;
 
 	case 113:
@@ -392,21 +358,21 @@ void processMouseButtons(int button, int state, int xx, int yy)
 	if (state == GLUT_DOWN)  {
 
 		if (button == GLUT_LEFT_BUTTON){
-			tracking = 1;
+			mouseState = 1;
 		}
 		else if (button == GLUT_RIGHT_BUTTON){
-			tracking = 2;
+			mouseState = 2;
 		}
 	}
 
 
 	//stop tracking the mouse
 	else if (state == GLUT_UP) {
-		if (tracking == 1) {
+		if (mouseState == 1) {
 			alpha -= (xx - startX);
 			beta += (yy - startY);
 		}
-		else if (tracking == 2) {
+		else if (mouseState == 2) {
 
 			// alterar para so mexer com um modulo maior que um dado numero (diminuir jitter)
 			if (abs(xx - startX) > abs(yy - startY)){
@@ -432,10 +398,8 @@ void processMouseButtons(int button, int state, int xx, int yy)
 		}
 		
 
-		tracking = 0;
-
-
-		updateCamera();
+		mouseState = 0;
+		camera->update(camState, mouseState);
 	}
 }
 
@@ -443,7 +407,7 @@ void processMouseButtons(int button, int state, int xx, int yy)
 
 void processMouseMotion(int xx, int yy)
 {
-
+	float camX, camY, camZ;
 	int deltaX, deltaY;
 	float alphaAux, betaAux;
 	float rAux;
@@ -452,7 +416,7 @@ void processMouseMotion(int xx, int yy)
 	deltaY = yy - startY;
 	
 	// left mouse button: move camera
-	if (tracking == 1) {
+	if (mouseState == 1) {
 
 
 		alphaAux = alpha + deltaX;
@@ -464,12 +428,15 @@ void processMouseMotion(int xx, int yy)
 			betaAux = -85.0f;
 		rAux = r;
 
-		if (camera == 3) //camera can only be moved in 1st person
-			updateCamera();
+		if (camState == 3) //camera can only be moved in 1st person
+			camera->update(camState, mouseState);
+
 
 		camX = rAux * sin(alphaAux * 3.14f / 180.0f) * cos(betaAux * 3.14f / 180.0f);
 		camZ = rAux * cos(alphaAux * 3.14f / 180.0f) * cos(betaAux * 3.14f / 180.0f);
 		camY = rAux *   						       sin(betaAux * 3.14f / 180.0f);
+
+		camera->setAt(camX, camY, camZ);
 	}
 
 
@@ -486,12 +453,8 @@ void processMouseMotion(int xx, int yy)
 void initOpenGL()
 {
 
-	camera = 1;
+	camState = 1;
 	// set the camera position based on its spherical coordinates
-	camX = 0;
-	camZ = 0;
-	camY = 0;
-
 	// some GL settings
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -569,8 +532,9 @@ int main(int argc, char **argv)
 
 	initObjects();
 
+	camera = new Camera(vsml, frog);
 	//set up camera initially
-	updateCamera();
+	camera->update(camState, mouseState);
 
 	glutWarpPointer(WinX / 2, WinY / 2);
 
