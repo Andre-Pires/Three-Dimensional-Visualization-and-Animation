@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2FB87FA1-5B2F-4219-BFF8-5B3CA366BC49}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Frogger</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)\Frogger\Libraries\glew-1.11.0\include;C:\Users\AnaRita\Dropbox\AVT - André, Sano e Jane\Projecto\Project\Frogger\Frogger\Libraries\glew-1.11.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\Frogger\Libraries\glew-1.11.0\lib\Release\Win32;C:\Users\A. Pires\Dropbox\AVT - André, Sano e Jane\Projecto\Project\Frogger\Frogger\Libraries\glew-1.11.0\lib\Release\Win32;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>freeglut.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Border.h" />
+    <ClInclude Include="Bus.h" />
+    <ClInclude Include="Car.h" />
+    <ClInclude Include="cube.h" />
+    <ClInclude Include="DynamicObject.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="Frog.h" />
+    <ClInclude Include="GameMaster.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Log.h" />
+    <ClInclude Include="Margin.h" />
+    <ClInclude Include="pyramid.h" />
+    <ClInclude Include="River.h" />
+    <ClInclude Include="Road.h" />
+    <ClInclude Include="StaticObject.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="triangle.h" />
+    <ClInclude Include="Truck.h" />
+    <ClInclude Include="Turtle.h" />
+    <ClInclude Include="Vector3D.h" />
+    <ClInclude Include="vsLogLib.h" />
+    <ClInclude Include="vsMathLib.h" />
+    <ClInclude Include="vsResourceLib.h" />
+    <ClInclude Include="vsResSurfRevLib.h" />
+    <ClInclude Include="vsShaderLib.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Border.cpp" />
+    <ClCompile Include="Bus.cpp" />
+    <ClCompile Include="Car.cpp" />
+    <ClCompile Include="DynamicObject.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="Frog.cpp" />
+    <ClCompile Include="GameMaster.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Log.cpp" />
+    <ClCompile Include="Margin.cpp" />
+    <ClCompile Include="River.cpp" />
+    <ClCompile Include="Road.cpp" />
+    <ClCompile Include="StaticObject.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Truck.cpp" />
+    <ClCompile Include="Turtle.cpp" />
+    <ClCompile Include="Vector3D.cpp" />
+    <ClCompile Include="vsLogLib.cpp" />
+    <ClCompile Include="vsMathLib.cpp" />
+    <ClCompile Include="vsResourceLib.cpp" />
+    <ClCompile Include="vsResSurfRevLib.cpp" />
+    <ClCompile Include="vsShaderLib.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\shader.frag" />
+    <None Include="shaders\shader.vert" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
