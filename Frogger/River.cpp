@@ -1,5 +1,6 @@
 #include "River.h"
 
+
 int verticeCountRiver = 24;
 int faceCountRiver = 12;
 
@@ -159,6 +160,8 @@ River::River(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
 	this->setScale(26.0f, 3.6f, 0.5f);
 	this->setShader(shader);
 	this->setVSML(vsml);
+	this->lengthBound = 13.0f;
+	this->widthBound = 1.8f;
 
 	glGenVertexArrays(1, &vaoRiver);
 	glBindVertexArray(vaoRiver);
@@ -230,4 +233,16 @@ void River::draw()
 
 	getVSML()->popMatrix(VSMathLib::MODEL);
 	// River
+}
+
+vector<float> River::getCharBoundaries()
+{
+	float upperBoundX = getPosition()->getX() + lengthBound;
+	float lowerBoundX = getPosition()->getX() - lengthBound;
+	float upperBoundY = getPosition()->getY() + widthBound;
+	float lowerBoundY = getPosition()->getY() - widthBound;
+
+	vector<float> bounds = { upperBoundX, lowerBoundX, upperBoundY, lowerBoundY };
+
+	return bounds;
 }

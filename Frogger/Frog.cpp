@@ -283,8 +283,7 @@ Frog::Frog(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
 	VSResSurfRevLib surfRev;
 
 	this->setPosition(x, y, z);
-	this->setSpeed(0.1f);
-	this->setStep(1.4f);
+	this->initialPosition.set(x, y, z);
 	this->setRotation(0.0f, 1.0f, 0.0f);
 	this->setRotationAngle(0.0f);
 	this->setScale(1.0f, 1.0f, 1.0f);
@@ -294,6 +293,8 @@ Frog::Frog(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
 	surfRev.createSphere(0.5f, 50);
 	this->setResSurfRev(surfRev);
 	this->setCharBoundaries(0.5f,0.4f);
+
+	lives = 5;
 
 	// create head
 	glGenVertexArrays(1, &vaoHead);
@@ -546,12 +547,12 @@ void Frog::move(float x, float y)
 	float posX = getPosition()->getX();
 	float posZ = getPosition()->getZ();
 	
-	if (posX < 12.5f && posX > -12.5f)
+	if (posX < 12.0f && posX > -12.0f)
 		setPosition(posX + x, posY, posZ);
 	else{
-		if (posX <= -12.5f && (x > 0))
+		if (posX <= -12.0f && (x > 0))
 			setPosition(posX + x, posY, posZ);
-		else if (posX >= 12.5f && (x < 0))
+		else if (posX >= 12.0f && (x < 0))
 			setPosition(posX + x, posY, posZ);
 	}
 
@@ -568,3 +569,14 @@ void Frog::move(float x, float y)
 	}
 }	
 
+void Frog::loseLife()
+{
+	lives--;
+	this->setPosition(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ());
+}
+
+void Frog::resetFrogger()
+{
+	lives = 5;
+	this->setPosition(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ());
+}

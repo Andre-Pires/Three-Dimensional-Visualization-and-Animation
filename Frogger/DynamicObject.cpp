@@ -97,8 +97,6 @@ vector<float> DynamicObject::getCharBoundaries()
 	float upperBoundY = getPosition()->getY() + widthCharBound;
 	float lowerBoundY = getPosition()->getY() - widthCharBound;
 
-	//////TODO erro com as tartarugas
-
 	vector<float> bounds = { upperBoundX, lowerBoundX, upperBoundY, lowerBoundY};
 
 	return bounds;

@@ -153,7 +153,7 @@ Car::Car(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
 	VSResSurfRevLib surfRev;
 
 	this->setPosition(x, y, z);
-	this->setSpeed(0.01f);
+	this->setSpeed(0.10f);
 	this->setStep(1.4f);
 	this->setRotation(0.0f, 0.0f, 1.0f);
 	this->setRotationAngle(180.0f);

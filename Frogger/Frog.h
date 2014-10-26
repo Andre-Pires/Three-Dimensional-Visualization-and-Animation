@@ -9,12 +9,15 @@
 #include "vsShaderLib.h"
 #include "vsResSurfRevLib.h"
 #include "DynamicObject.h"
+#include "Vector3D.h"
 
 class Frog : public DynamicObject
 {
 
 	//GLuint vaoTri;
 	GLuint vaoHead, vaoBody;
+	int lives;
+	Vector3D initialPosition;
 	
 
 public:
@@ -24,5 +27,7 @@ public:
 	
 	Frog(VSMathLib *vsml, VSShaderLib * shader, float x, float y, float z);
 	~Frog();
+	void loseLife();
+	void resetFrogger();
 };
 

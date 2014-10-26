@@ -17,7 +17,7 @@ Log::Log(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
 	this->setShader(shader);
 	this->setVSML(vsml);
 	// create wheel
-	surfRev.createCylinder(1.0f, 0.5f, 50);
+	surfRev.createCylinder(1.0f, 0.5f, 6);
 	this->setResSurfRev(surfRev);
 	this->setMoveBoundaries(-12.0f, 12.0f);
 	this->setDirection(LEFT);

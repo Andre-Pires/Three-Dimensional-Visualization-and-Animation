@@ -10,6 +10,7 @@ using namespace std;
 
 /** Definitions **/
 #define CAPTION "Frogger"
+#define NUM_LANE 8
 
 /** Variables **/
 VSMathLib *vsml;
@@ -27,11 +28,11 @@ River * river;
 
 /** Movables **/
 Frog * frog;
-Truck * trucks[5];
-Turtle * turtles[5];
-Car * cars[5];
-Bus * buses[5];
-Log * stems[5];
+Truck * trucks[NUM_LANE];
+Turtle * turtles[NUM_LANE];
+Car * cars[NUM_LANE];
+Bus * buses[NUM_LANE];
+Log * stems[NUM_LANE];
 
 // Camera Position
 float camX, camY, camZ;
@@ -55,9 +56,6 @@ char s[32];
 // Boolean state variables
 bool hasFrogCamMoved = false;
 
-// VAO
-GLuint vaoPiramide, vaoCube;
-
 // Display
 int WinX = 1366, WinY = 768;
 int WindowHandle = 0;
@@ -72,7 +70,7 @@ unsigned int FrameCount = 0;
 void speedUpCharacters(int value)
 {
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < NUM_LANE; i++)
 	{
 		turtles[i]->speedUp();
 		stems[i]->speedUp();
@@ -88,82 +86,88 @@ void collisionDetector(int value)
 {
 	vector<float> frogBounds = frog->getCharBoundaries();
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < NUM_LANE; i++)
 	{
 		if (trucks[i]->isAlive()){
 			vector<float> objBounds = trucks[i]->getCharBoundaries();
 		
-			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]){
-				if (frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
-					printf("truck");
+			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1] 
+				&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
+					frog->loseLife();
 					goto alreadyHadACollision;
-				}
 			}
 		}
 	}
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < NUM_LANE; i++)
 	{
 		if (cars[i]->isAlive()){
 			vector<float> objBounds = cars[i]->getCharBoundaries();
 
-			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]){
-				if (frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
-					printf("cars");
+			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]
+				&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
+					frog->loseLife();
 					goto alreadyHadACollision;
-				}
 			}
 		}
 	}
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < NUM_LANE; i++)
 	{
 		if (buses[i]->isAlive()){
 			vector<float> objBounds = buses[i]->getCharBoundaries();
 
-			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]){
-				if (frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
-					printf("buses");
+			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]
+				&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
+					frog->loseLife();
 					goto alreadyHadACollision;
 				}
-			}
 		}
 	}
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < NUM_LANE; i++)
 	{
 		if (stems[i]->isAlive()){
 			vector<float> objBounds = stems[i]->getCharBoundaries();
 
 			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1] 
 				&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){ 
-					printf("stems");
+					frog->setPosition(stems[i]->getPosition()->getX(), stems[i]->getPosition()->getY(), frog->getPosition()->getZ());
 					goto alreadyHadACollision;
 			}
 		}
 	}
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < NUM_LANE; i++)
 	{
 		if (turtles[i]->isAlive()){
 			vector<float> objBounds = turtles[i]->getCharBoundaries();
 
-			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]){
-				if (frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
-					printf("turtles");
+			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]
+				&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
+					frog->setPosition(turtles[i]->getPosition()->getX(), turtles[i]->getPosition()->getY(), frog->getPosition()->getZ());
 					goto alreadyHadACollision;
-				}
 			}
 		}
 	}
 
+	{
+		vector<float> objBounds = river->getCharBoundaries();
+
+		if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]
+			&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
+			frog->loseLife();
+			goto alreadyHadACollision;
+		}
+	}
 	alreadyHadACollision:
-	glutTimerFunc(25, collisionDetector, 0);
+
+	glutTimerFunc(50, collisionDetector, 0);
 }
 
 void moveCharacters(int value)
 {
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < NUM_LANE; i++)
 	{
 		if(stems[i]->isAlive())
 			stems[i]->move();
@@ -217,7 +221,7 @@ void drawObjects()
 	frog->draw();
 
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < NUM_LANE; i++)
 	{
 		if (stems[i]->isAlive())
 			stems[i]->draw();
@@ -246,7 +250,7 @@ void initObjects()
 	border2 = new Border(vsml, &shader, 0.0f, -6.0f, 0.0f);
 	road = new Road(vsml, &shader, 0.0f, -3.0f, 0.0f);
 
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < NUM_LANE; i++)
 	{
 		buses[i] = new Bus(vsml, &shader, -11.5f, -3.6f, 1.5f);
 		cars[i] = new Car(vsml, &shader, 12.2f, -2.4f, 1.1f);
@@ -256,11 +260,9 @@ void initObjects()
 	}
 
 
-
 	frog = new Frog(vsml, &shader, 0.0f, -6.0f, 1.0f);
 	frogJump = 0;
 	frogRot = 1;
-	//frogMouseMove = 0;
 
 }
 
@@ -334,6 +336,17 @@ void renderScene(void) {
 	//draws all objects on scene
 	drawObjects();
 
+	string result = "LIVES:";
+	string lives = "lll ";
+	if (camState == 1)
+		glRasterPos2f(95, 89.75);
+	else if (camState == 2)
+		glRasterPos3f(frog->getPosition()->getX() + 124, 100, 30);
+	else glRasterPos3f(frog->getPosition()->getX() + 46, 9, 43.60);
+
+	for (int i = 0; i < (int)result.length(); i++)
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, result[i]);   //Desenha a string no HUD
+
 	//swap buffers
 	glutSwapBuffers();
 
@@ -365,7 +378,7 @@ void giveLife(int value)
 	int randomValue = rand() % 100;
 
 	if (randomValue < 20){
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < NUM_LANE; i++)
 		{
 			if (!turtles[i]->isAlive()){
 				turtles[i]->setAlive(true);
@@ -375,7 +388,7 @@ void giveLife(int value)
 	}
 
 	if (randomValue >=20 && randomValue < 40){
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < NUM_LANE; i++)
 		{
 			if (!stems[i]->isAlive()){
 				stems[i]->setAlive(true);
@@ -386,7 +399,7 @@ void giveLife(int value)
 
 	if (randomValue >= 40 && randomValue < 60){
 
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < NUM_LANE; i++)
 		{
 			if (!trucks[i]->isAlive()){
 				trucks[i]->setAlive(true);
@@ -397,7 +410,7 @@ void giveLife(int value)
 
 	if (randomValue >= 60 && randomValue < 80){
 
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < NUM_LANE; i++)
 		{
 			if (!cars[i]->isAlive()){
 				cars[i]->setAlive(true);
@@ -408,7 +421,7 @@ void giveLife(int value)
 
 	if (randomValue >= 80 && randomValue < 100){
 		
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < NUM_LANE; i++)
 		{
 			if (!buses[i]->isAlive()){
 				buses[i]->setAlive(true);
@@ -629,7 +642,7 @@ int main(int argc, char **argv)
 	glutKeyboardFunc(processKeys);
 	glutMouseFunc(processMouseButtons);
 	glutMotionFunc(processMouseMotion);
-
+	
 	//returns from mainloop
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 

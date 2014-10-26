@@ -205,7 +205,7 @@ Bus::Bus(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
 	this->setResSurfRev(surfRev);
 	this->setMoveBoundaries(-11.5f, 11.5f);
 	this->setDirection(RIGHT);
-	this->setCharBoundaries(1.5f, 1.0f);
+	this->setCharBoundaries(1.5f, 0.5f);
 
 	glGenVertexArrays(1, &vaoBus);
 	glBindVertexArray(vaoBus);
