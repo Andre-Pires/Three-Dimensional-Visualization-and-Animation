@@ -46,14 +46,14 @@ void Camera::update(int camState, int mouseState)
 
 		if (mouseState == 1) //testing to see if user is looking around
 		{
-			vsml->lookAt(frogX + 0.25f, 0.5f, frogZ + 1,
-				atCam->getX(), atCam->getY(), frogZ - 5,
-				0, 1, 0);
+			vsml->lookAt(frogX, frogY - 0.85f, frogZ + 0.4f,
+				atCam->getX(), atCam->getY(), atCam->getZ(),
+				0.0f, 0.0f, 1.0f);
 		}
 		else{
-			vsml->lookAt(frogX + 0.25f, 0.5f, frogZ + 1,
-				frogX + 0.25f, frogY + 0.25f, frogZ - 5,
-				0, 1, 0);
+			vsml->lookAt(frogX, frogY - 0.85f, frogZ + 0.4f,
+				frogX, frogY + 5.0f, frogZ + 0.2f,
+				0.0f, 0.0f, 1.0f);
 		}
 	}
 

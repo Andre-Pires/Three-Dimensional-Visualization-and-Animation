@@ -19,8 +19,9 @@ Log::Log(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
 	// create wheel
 	surfRev.createCylinder(1.0f, 0.5f, 50);
 	this->setResSurfRev(surfRev);
-	this->setBoundaries(-12.0f, 12.0f);
+	this->setMoveBoundaries(-12.0f, 12.0f);
 	this->setDirection(LEFT);
+	this->setCharBoundaries(0.75f, 0.5f);
 
 	// unbind the VAO
 	glBindVertexArray(0);

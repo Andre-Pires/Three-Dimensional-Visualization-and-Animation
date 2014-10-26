@@ -177,15 +177,16 @@ Turtle::Turtle(VSMathLib *vsml, VSShaderLib * shader, float x, float y, float z)
 	this->setSpeed(0.03f);
 	this->setStep(1.4f);
 	this->setRotation(0.0f, 1.0f, 0.0f);
-	this->setRotationAngle(-90.0f);
-	this->setScale(0.4f, 0.4f, 0.4f);
+	this->setRotationAngle(0.0f);
+	this->setScale(1.0f, 1.0f, 1.0f);
 	this->setShader(shader);
 	this->setVSML(vsml);
 	// create sphere
-	surfRev.createSphere(1.0f, 3);
+	surfRev.createSphere(0.5f, 3);
 	this->setResSurfRev(surfRev);
 	this->setDirection(LEFT);
-	this->setBoundaries(-7.8f, 7.4f);
+	this->setMoveBoundaries(-12.5f, 12.5f);
+	this->setCharBoundaries(0.75f, 0.5f);
 
 
 	// create body
@@ -242,23 +243,26 @@ void Turtle::draw()
 	Vector3D * scale = getScale();
 
 	getVSML()->loadIdentity(VSMathLib::MODEL);
+
+	// Turtle
 	getVSML()->pushMatrix(VSMathLib::MODEL);
 	getVSML()->translate(getPosition()->getX(), getPosition()->getY(), getPosition()->getZ());
 	getVSML()->rotate(rotAngle, rotation->getX(), rotation->getY(), rotation->getZ());
 	getVSML()->scale(scale->getX(), scale->getY(), scale->getZ());
+	
 	// head
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(0.0f, 0.0f, 1.25f);
-	getVSML()->scale(0.4f, 0.25f, 0.5f);
-
+	getVSML()->translate(-0.45f, 0.0f, 0.0f);
+	getVSML()->rotate(90.0f, 0.0f, 0.0f, 1.0f);
+	getVSML()->scale(0.5f, 0.5f, 0.25f);
 	glUseProgram((*getShader()).getProgramIndex());
-	// send matrices to uniform buffer
+
 	getVSML()->matricesToGL();
 	getResSurfRev().render();
 	getVSML()->popMatrix(VSMathLib::MODEL);
 	// head
 
-	//eyes
+/*	//eyes
 	getVSML()->pushMatrix(VSMathLib::MODEL);
 	getVSML()->translate(0.25, 0.2, 1.3);
 	getVSML()->scale(0.1f, 0.1f, 0.1f);
@@ -280,37 +284,39 @@ void Turtle::draw()
 	getVSML()->popMatrix(VSMathLib::MODEL);
 	//eyes
 
-	// body
+	*/// body
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(0, 0, 0);
-	getVSML()->scale(1.0f, 0.5f, 1.25f);
-
+	getVSML()->translate(0.15f, 0.0f, 0.0f);
+	getVSML()->rotate(90.0f, 0.0f, 0.0f, 1.0f);
+	getVSML()->scale(1.0f, 1.0f, 0.5f);
 	glUseProgram((*getShader()).getProgramIndex());
-	// send matrices to uniform buffer
+
 	getVSML()->matricesToGL();
 	getResSurfRev().render();
 	getVSML()->popMatrix(VSMathLib::MODEL);
 	// body
+	
 
+	// paws
 	// front left paw
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(0.7f, 0.0f, 1.0f);
-	getVSML()->scale(0.3f, 0.15f, 0.3f);
-
+	getVSML()->translate(-0.1f, -0.35f, -0.1f);
+	getVSML()->rotate(90.0f, 0.0f, 0.0f, 1.0f);
+	getVSML()->scale(0.35f, 0.35f, 0.15f);
 	glUseProgram((*getShader()).getProgramIndex());
-	// send matrices to uniform buffer
+	
 	getVSML()->matricesToGL();
 	getResSurfRev().render();
 	getVSML()->popMatrix(VSMathLib::MODEL);
 	// front left paw
-
+	
 	// front right paw
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(-0.7f, 0.0f, 1.0f);
-	getVSML()->scale(0.3f, 0.15f, 0.3f);
-
+	getVSML()->translate(-0.1f, 0.35f, -0.1f);
+	getVSML()->rotate(90.0f, 0.0f, 0.0f, 1.0f);
+	getVSML()->scale(0.35f, 0.35f, 0.15f);
 	glUseProgram((*getShader()).getProgramIndex());
-	// send matrices to uniform buffer
+
 	getVSML()->matricesToGL();
 	getResSurfRev().render();
 	getVSML()->popMatrix(VSMathLib::MODEL);
@@ -318,11 +324,11 @@ void Turtle::draw()
 
 	// back right paw
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(-0.7f, 0.0f, -1.0f);
-	getVSML()->scale(0.3f, 0.15f, 0.3f);
-
+	getVSML()->translate(0.4f, 0.35f, -0.1f);
+	getVSML()->rotate(90.0f, 0.0f, 0.0f, 1.0f);
+	getVSML()->scale(0.35f, 0.35f, 0.15f);
 	glUseProgram((*getShader()).getProgramIndex());
-	// send matrices to uniform buffer
+
 	getVSML()->matricesToGL();
 	getResSurfRev().render();
 	getVSML()->popMatrix(VSMathLib::MODEL);
@@ -330,17 +336,18 @@ void Turtle::draw()
 
 	// back left paw
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(0.7f, 0.0f, -1.0f);
-	getVSML()->scale(0.3f, 0.15f, 0.3f);
-
+	getVSML()->translate(0.4f, -0.35f, -0.1f);
+	getVSML()->rotate(90.0f, 0.0f, 0.0f, 1.0f);
+	getVSML()->scale(0.35f, 0.35f, 0.15f);
 	glUseProgram((*getShader()).getProgramIndex());
-	// send matrices to uniform buffer
+
 	getVSML()->matricesToGL();
 	getResSurfRev().render();
 	getVSML()->popMatrix(VSMathLib::MODEL);
 	// back left paw
-
+	
 	getVSML()->popMatrix(VSMathLib::MODEL);
+	// Turtle
 
 
 }

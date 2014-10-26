@@ -1,5 +1,8 @@
 #pragma once
 #include "GameObject.h"
+
+using namespace std;
+
 class DynamicObject : public GameObject
 {
 #define LEFT 0
@@ -8,7 +11,8 @@ class DynamicObject : public GameObject
 	int direction;
 	float speed;
 	float step;
-	float left, right;
+	float leftMoveBound, rightMoveBound;
+	float lengthCharBound, widthCharBound;
 	bool alive;
 
 public:
@@ -24,7 +28,9 @@ public:
 	bool isAlive();
 	void setDirection(int dir);
 	void move();
-	void setBoundaries(float leftBound, float rightBound);
+	void setMoveBoundaries(float leftBound, float rightBound);
+	void setCharBoundaries(float lengthBound, float widthBound);
 	void speedUp();
+	vector<float> getCharBoundaries();
 };
 

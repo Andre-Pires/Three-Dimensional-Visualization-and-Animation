@@ -203,8 +203,9 @@ Bus::Bus(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
 	// create wheel
 	surfRev.createCylinder(1.0f, 0.3f, 50);
 	this->setResSurfRev(surfRev);
-	this->setBoundaries(-11.5f, 11.5f);
+	this->setMoveBoundaries(-11.5f, 11.5f);
 	this->setDirection(RIGHT);
+	this->setCharBoundaries(1.5f, 1.0f);
 
 	glGenVertexArrays(1, &vaoBus);
 	glBindVertexArray(vaoBus);

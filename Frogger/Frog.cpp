@@ -293,7 +293,7 @@ Frog::Frog(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
 	// create eye
 	surfRev.createSphere(0.5f, 50);
 	this->setResSurfRev(surfRev);
-
+	this->setCharBoundaries(0.5f,0.4f);
 
 	// create head
 	glGenVertexArrays(1, &vaoHead);
@@ -539,12 +539,32 @@ void Frog::draw()
 
 }
 
-void Frog::move(float x, float z)
+// Refactorizar no futuro
+void Frog::move(float x, float y) 
 {
 	float posY = getPosition()->getY();
 	float posX = getPosition()->getX();
 	float posZ = getPosition()->getZ();
+	
+	if (posX < 12.5f && posX > -12.5f)
+		setPosition(posX + x, posY, posZ);
+	else{
+		if (posX <= -12.5f && (x > 0))
+			setPosition(posX + x, posY, posZ);
+		else if (posX >= 12.5f && (x < 0))
+			setPosition(posX + x, posY, posZ);
+	}
 
-	setPosition(posX + x, posY, posZ + z);
-}
+	posY = getPosition()->getY();
+	posX = getPosition()->getX();
+
+	if (posY < 6.0f && posY > -6.0f)
+		setPosition(posX, posY + y, posZ);
+	else{
+		if (posY <= -6.0f && (y > 0))
+			setPosition(posX, posY + y, posZ);
+		else if (posY >= 6.0f && (y < 0))
+			setPosition(posX, posY + y, posZ);
+	}
+}	
 

@@ -165,8 +165,9 @@ Truck::Truck(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
 	// create wheel
 	surfRev.createCylinder(1.0f, 0.3f, 50);
 	this->setResSurfRev(surfRev);
-	this->setBoundaries(-12.0f, 12.0f);
+	this->setMoveBoundaries(-12.0f, 12.0f);
 	this->setDirection(RIGHT);
+	this->setCharBoundaries(1.0f, 0.5f);
 
 	glGenVertexArrays(1, &vaoTruck);
 	glBindVertexArray(vaoTruck);

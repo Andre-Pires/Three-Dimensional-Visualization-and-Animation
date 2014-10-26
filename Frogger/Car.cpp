@@ -163,8 +163,9 @@ Car::Car(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
 	// create wheel
 	surfRev.createCylinder(1.0f, 0.2f, 50);
 	this->setResSurfRev(surfRev);
-	this->setBoundaries(-12.25f, 12.25f);
+	this->setMoveBoundaries(-12.25f, 12.25f);
 	this->setDirection(LEFT);
+	this->setCharBoundaries(0.8f, 0.5f);
 	
 	glGenVertexArrays(1, &vaoCar);
 	glBindVertexArray(vaoCar);

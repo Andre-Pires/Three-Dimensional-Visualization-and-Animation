@@ -6,6 +6,7 @@
 #include "Entity.h"
 #include "Camera.h"
 
+using namespace std;
 
 /** Definitions **/
 #define CAPTION "Frogger"
@@ -26,11 +27,11 @@ River * river;
 
 /** Movables **/
 Frog * frog;
-Truck * truck[5];
-Turtle * turtle[5];
+Truck * trucks[5];
+Turtle * turtles[5];
 Car * cars[5];
 Bus * buses[5];
-Log * stem[5];
+Log * stems[5];
 
 // Camera Position
 float camX, camY, camZ;
@@ -73,9 +74,9 @@ void speedUpCharacters(int value)
 
 	for (int i = 0; i < 5; i++)
 	{
-		turtle[i]->speedUp();
-		stem[i]->speedUp();
-		truck[i]->speedUp();
+		turtles[i]->speedUp();
+		stems[i]->speedUp();
+		trucks[i]->speedUp();
 		cars[i]->speedUp();
 		buses[i]->speedUp();
 	}
@@ -83,19 +84,95 @@ void speedUpCharacters(int value)
 	glutTimerFunc(20000, speedUpCharacters, 0);
 }
 
+void collisionDetector(int value)
+{
+	vector<float> frogBounds = frog->getCharBoundaries();
+
+	for (int i = 0; i < 5; i++)
+	{
+		if (trucks[i]->isAlive()){
+			vector<float> objBounds = trucks[i]->getCharBoundaries();
+		
+			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]){
+				if (frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
+					printf("truck");
+					goto alreadyHadACollision;
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < 5; i++)
+	{
+		if (cars[i]->isAlive()){
+			vector<float> objBounds = cars[i]->getCharBoundaries();
+
+			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]){
+				if (frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
+					printf("cars");
+					goto alreadyHadACollision;
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < 5; i++)
+	{
+		if (buses[i]->isAlive()){
+			vector<float> objBounds = buses[i]->getCharBoundaries();
+
+			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]){
+				if (frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
+					printf("buses");
+					goto alreadyHadACollision;
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < 5; i++)
+	{
+		if (stems[i]->isAlive()){
+			vector<float> objBounds = stems[i]->getCharBoundaries();
+
+			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1] 
+				&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){ 
+					printf("stems");
+					goto alreadyHadACollision;
+			}
+		}
+	}
+	for (int i = 0; i < 5; i++)
+	{
+		if (turtles[i]->isAlive()){
+			vector<float> objBounds = turtles[i]->getCharBoundaries();
+
+			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]){
+				if (frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
+					printf("turtles");
+					goto alreadyHadACollision;
+				}
+			}
+		}
+	}
+
+	alreadyHadACollision:
+	glutTimerFunc(25, collisionDetector, 0);
+}
+
 void moveCharacters(int value)
 {
 
 	for (int i = 0; i < 5; i++)
 	{
-		if(stem[i]->isAlive())
-			stem[i]->move();
+		if(stems[i]->isAlive())
+			stems[i]->move();
 
-		if (turtle[i]->isAlive()) 
-			turtle[i]->move();
+		if (turtles[i]->isAlive()) 
+			turtles[i]->move();
 
-		if (truck[i]->isAlive())
-			truck[i]->move();
+		if (trucks[i]->isAlive())
+			trucks[i]->move();
 
 		if (cars[i]->isAlive())
 			cars[i]->move();
@@ -107,22 +184,23 @@ void moveCharacters(int value)
 	glutTimerFunc(25, moveCharacters, 0);
 }
 
+
 void moveFrog()
 {
+	
 	if (frogJump == 1){
-		frog->move(0.0, -1.0);
+		frog->move(0.0f, 1.2f);
 		frogJump = 0;
-	}
-	else if (frogJump == 2){
-		frog->move(0.0, 1.0);
+	}else if (frogJump == 2){
+		frog->move(0.0f, -1.2f);
 		frogJump = 0;
 	}
 	else if (frogJump == 3){
-		frog->move(-1.0, 0.0);
+		frog->move(-1.0f, 0.0f);
 		frogJump = 0;
 	}
 	else if (frogJump == 4){
-		frog->move(1.0, 0.0);
+		frog->move(1.0f, 0.0f);
 		frogJump = 0;
 	}
 }
@@ -141,14 +219,14 @@ void drawObjects()
 
 	for (int i = 0; i < 5; i++)
 	{
-		if (stem[i]->isAlive())
-			stem[i]->draw();
+		if (stems[i]->isAlive())
+			stems[i]->draw();
 
-		if (turtle[i]->isAlive())
-			turtle[i]->draw();
+		if (turtles[i]->isAlive())
+			turtles[i]->draw();
 
-		if (truck[i]->isAlive())
-			truck[i]->draw();
+		if (trucks[i]->isAlive())
+			trucks[i]->draw();
 
 		if (cars[i]->isAlive())
 			cars[i]->draw();
@@ -172,9 +250,9 @@ void initObjects()
 	{
 		buses[i] = new Bus(vsml, &shader, -11.5f, -3.6f, 1.5f);
 		cars[i] = new Car(vsml, &shader, 12.2f, -2.4f, 1.1f);
-		truck[i] = new Truck(vsml, &shader, -12.0f, -1.2f, 1.4f);
-		stem[i] = new Log(vsml, &shader, -12.0f, 3.6f, 0.0f);
-		turtle[i] = new Turtle(vsml, &shader, 7.4f, -0.4f, -2.5f);
+		trucks[i] = new Truck(vsml, &shader, -12.0f, -1.2f, 1.4f);
+		stems[i] = new Log(vsml, &shader, -12.0f, 3.6f, 0.0f);
+		turtles[i] = new Turtle(vsml, &shader, 12.5f, 2.4f, 0.5f);
 	}
 
 
@@ -289,8 +367,8 @@ void giveLife(int value)
 	if (randomValue < 20){
 		for (int i = 0; i < 5; i++)
 		{
-			if (!turtle[i]->isAlive()){
-				turtle[i]->setAlive(true);
+			if (!turtles[i]->isAlive()){
+				turtles[i]->setAlive(true);
 				break;
 			}
 		}
@@ -299,8 +377,8 @@ void giveLife(int value)
 	if (randomValue >=20 && randomValue < 40){
 		for (int i = 0; i < 5; i++)
 		{
-			if (!stem[i]->isAlive()){
-				stem[i]->setAlive(true);
+			if (!stems[i]->isAlive()){
+				stems[i]->setAlive(true);
 				break;
 			}
 		}
@@ -310,8 +388,8 @@ void giveLife(int value)
 
 		for (int i = 0; i < 5; i++)
 		{
-			if (!truck[i]->isAlive()){
-				truck[i]->setAlive(true);
+			if (!trucks[i]->isAlive()){
+				trucks[i]->setAlive(true);
 				break;
 			}
 		}
@@ -480,8 +558,8 @@ void processMouseMotion(int xx, int yy)
 
 
 		camX = rAux * sin(alphaAux * 3.14f / 180.0f) * cos(betaAux * 3.14f / 180.0f);
-		camZ = rAux * cos(alphaAux * 3.14f / 180.0f) * cos(betaAux * 3.14f / 180.0f);
-		camY = rAux *   						       sin(betaAux * 3.14f / 180.0f);
+		camY = rAux * cos(alphaAux * 3.14f / 180.0f) * cos(betaAux * 3.14f / 180.0f);
+		camZ = rAux *   						       sin(betaAux * 3.14f / 180.0f);
 
 		camera->setAt(camX, camY, camZ);
 	}
@@ -576,6 +654,7 @@ int main(int argc, char **argv)
 	glutTimerFunc(0, moveCharacters, 0);
 	glutTimerFunc(10000, speedUpCharacters, 0);
 	glutTimerFunc(0, giveLife, 0);
+	glutTimerFunc(25, collisionDetector, 0);
 
 	initObjects();
 

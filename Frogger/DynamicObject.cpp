@@ -2,6 +2,7 @@
 #include "DynamicObject.h"
 
 
+
 DynamicObject::DynamicObject()
 {
 	alive = false;
@@ -47,10 +48,10 @@ void DynamicObject::setDirection(int dir)
 	direction = dir;
 }
 
-void DynamicObject::setBoundaries(float leftMoveBound, float rightMoveBound)
+void DynamicObject::setMoveBoundaries(float leftMoveBound, float rightMoveBound)
 {
-	left = leftMoveBound;
-	right = rightMoveBound;
+	this->leftMoveBound = leftMoveBound;
+	this->rightMoveBound = rightMoveBound;
 }
 
 void DynamicObject::move()
@@ -60,18 +61,18 @@ void DynamicObject::move()
 
 	if (direction == LEFT)
 	{
-		if (posX <= left)
+		if (posX <= leftMoveBound)
 		{
-			setPosition(right, getPosition()->getY(), getPosition()->getZ());
+			setPosition(rightMoveBound, getPosition()->getY(), getPosition()->getZ());
 			setAlive(false);
 		}
 		else setPosition(getPosition()->getX() - getSpeed(), getPosition()->getY(), getPosition()->getZ());
 	}
 	else if (direction == RIGHT)
 	{
-		if (posX >= right)
+		if (posX >= rightMoveBound)
 		{
-			setPosition(left, getPosition()->getY(), getPosition()->getZ());
+			setPosition(leftMoveBound, getPosition()->getY(), getPosition()->getZ());
 			setAlive(false);
 		}
 		else setPosition(getPosition()->getX() + getSpeed(), getPosition()->getY(), getPosition()->getZ());
@@ -83,7 +84,22 @@ void DynamicObject::speedUp()
 	setSpeed(getSpeed() * getStep());
 }
 
-void DynamicObject::hasCollided(Vector3D pos)
+void DynamicObject::setCharBoundaries(float length, float width)
 {
-	setSpeed(getSpeed() * getStep());
+	lengthCharBound = length;
+	widthCharBound = width;
+}
+
+vector<float> DynamicObject::getCharBoundaries()
+{
+	float upperBoundX = getPosition()->getX() + lengthCharBound;
+	float lowerBoundX = getPosition()->getX() - lengthCharBound;
+	float upperBoundY = getPosition()->getY() + widthCharBound;
+	float lowerBoundY = getPosition()->getY() - widthCharBound;
+
+	//////TODO erro com as tartarugas
+
+	vector<float> bounds = { upperBoundX, lowerBoundX, upperBoundY, lowerBoundY};
+
+	return bounds;
 }
