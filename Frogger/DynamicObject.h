@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include "Vector3D.h"
 
 using namespace std;
 
@@ -8,6 +9,7 @@ class DynamicObject : public GameObject
 #define LEFT 0
 #define RIGHT 1
 
+	Vector3D * initialPosition;
 	int direction;
 	float speed;
 	float step;
@@ -18,7 +20,7 @@ class DynamicObject : public GameObject
 public:
 	
 
-	DynamicObject();
+	DynamicObject(float x, float y, float z);
 	~DynamicObject();
 	float getSpeed();
 	void setSpeed(float speed);
@@ -32,5 +34,6 @@ public:
 	void setCharBoundaries(float lengthBound, float widthBound);
 	void speedUp();
 	vector<float> getCharBoundaries();
+	void resetCharacter();
 };
 

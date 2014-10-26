@@ -19,10 +19,10 @@ VSResSurfRevLib mySurfRev;
 Camera * camera;
 
 /** Scenery **/
-Border * border;
-Border * border2;
-Margin * margin;
-Margin * margin2;
+Border * upperBorder;
+Border * bottomBorder;
+Margin * bottomMargin;
+Margin * upperMargin;
 Road * road;
 River * river;
 
@@ -33,6 +33,9 @@ Turtle * turtles[NUM_LANE];
 Car * cars[NUM_LANE];
 Bus * buses[NUM_LANE];
 Log * stems[NUM_LANE];
+
+// Game Status
+int score = 0;
 
 // Camera Position
 float camX, camY, camZ;
@@ -66,6 +69,41 @@ unsigned int FrameCount = 0;
 /*                        GAME	                         */
 /*                                                       */
 
+void resetScore()
+{
+	score = 0;
+	printf("Score: %d\n", score);
+}
+
+void increaseScore()
+{
+	score += 50;
+	printf("Score: %d\n", score);
+}
+
+void resetCharacters()
+{
+
+	for (int i = 0; i < NUM_LANE; i++)
+	{
+		if (stems[i]->isAlive())
+			stems[i]->resetCharacter();
+
+		if (turtles[i]->isAlive())
+			turtles[i]->resetCharacter();
+
+		if (trucks[i]->isAlive())
+			trucks[i]->resetCharacter();
+
+		if (cars[i]->isAlive())
+			cars[i]->resetCharacter();
+
+		if (buses[i]->isAlive())
+			buses[i]->resetCharacter();
+
+		frog->resetCharacter();
+	}
+}
 
 void speedUpCharacters(int value)
 {
@@ -82,86 +120,153 @@ void speedUpCharacters(int value)
 	glutTimerFunc(20000, speedUpCharacters, 0);
 }
 
-void collisionDetector(int value)
+void resetGame()
+{
+	resetCharacters();
+	resetScore();
+}
+
+void collisionDetector()
 {
 	vector<float> frogBounds = frog->getCharBoundaries();
+	bool alreadyHadACollision = false;
 
 	for (int i = 0; i < NUM_LANE; i++)
 	{
 		if (trucks[i]->isAlive()){
 			vector<float> objBounds = trucks[i]->getCharBoundaries();
-		
-			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1] 
-				&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
-					frog->loseLife();
-					goto alreadyHadACollision;
-			}
-		}
-	}
-
-	for (int i = 0; i < NUM_LANE; i++)
-	{
-		if (cars[i]->isAlive()){
-			vector<float> objBounds = cars[i]->getCharBoundaries();
 
 			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]
 				&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
-					frog->loseLife();
-					goto alreadyHadACollision;
-			}
-		}
-	}
 
-	for (int i = 0; i < NUM_LANE; i++)
-	{
-		if (buses[i]->isAlive()){
-			vector<float> objBounds = buses[i]->getCharBoundaries();
-
-			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]
-				&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
-					frog->loseLife();
-					goto alreadyHadACollision;
+				if (frog->getLives() <= 0){
+					resetGame();
 				}
+				else
+					frog->loseLife();
+
+				alreadyHadACollision = true;
+			}
 		}
 	}
 
-	for (int i = 0; i < NUM_LANE; i++)
-	{
-		if (stems[i]->isAlive()){
-			vector<float> objBounds = stems[i]->getCharBoundaries();
+	if (!alreadyHadACollision)	{
 
-			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1] 
-				&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){ 
+		for (int i = 0; i < NUM_LANE; i++)
+		{
+			if (cars[i]->isAlive()){
+				vector<float> objBounds = cars[i]->getCharBoundaries();
+
+				if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]
+					&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
+
+					if (frog->getLives() <= 0){
+						resetGame();
+					}
+					else
+						frog->loseLife();
+
+					alreadyHadACollision = true;
+				}
+			}
+		}
+	}
+
+	if (!alreadyHadACollision)	{
+
+		for (int i = 0; i < NUM_LANE; i++)
+		{
+			if (buses[i]->isAlive()){
+				vector<float> objBounds = buses[i]->getCharBoundaries();
+
+				if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]
+					&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
+
+					if (frog->getLives() <= 0){
+						resetGame();
+					}
+					else
+						frog->loseLife();
+
+					alreadyHadACollision = true;
+				}
+			}
+		}
+	}
+
+	if (!alreadyHadACollision)	{
+
+		for (int i = 0; i < NUM_LANE; i++)
+		{
+			if (stems[i]->isAlive()){
+				vector<float> objBounds = stems[i]->getCharBoundaries();
+
+				if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]
+					&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
 					frog->setPosition(stems[i]->getPosition()->getX(), stems[i]->getPosition()->getY(), frog->getPosition()->getZ());
-					goto alreadyHadACollision;
+					alreadyHadACollision = true;
+				}
 			}
 		}
 	}
-	for (int i = 0; i < NUM_LANE; i++)
-	{
-		if (turtles[i]->isAlive()){
-			vector<float> objBounds = turtles[i]->getCharBoundaries();
 
-			if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]
-				&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
+	if (!alreadyHadACollision)	{
+
+		for (int i = 0; i < NUM_LANE; i++)
+		{
+			if (turtles[i]->isAlive()){
+				vector<float> objBounds = turtles[i]->getCharBoundaries();
+
+				if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]
+					&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
 					frog->setPosition(turtles[i]->getPosition()->getX(), turtles[i]->getPosition()->getY(), frog->getPosition()->getZ());
-					goto alreadyHadACollision;
+					alreadyHadACollision = true;
+				}
 			}
 		}
 	}
 
-	{
-		vector<float> objBounds = river->getCharBoundaries();
+	if (!alreadyHadACollision)	{
 
-		if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]
+		vector<float> objBounds = river->getSceneryBoundaries();
+
+		if (!alreadyHadACollision
+			&& frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]
 			&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
-			frog->loseLife();
-			goto alreadyHadACollision;
+
+			if (frog->getLives() <= 0){
+				resetGame();
+			}
+			else
+				frog->loseLife();
+
+			alreadyHadACollision = true;
 		}
 	}
-	alreadyHadACollision:
 
-	glutTimerFunc(50, collisionDetector, 0);
+	if (!alreadyHadACollision)	{
+
+		vector<float> objBounds = upperMargin->getSceneryBoundaries();
+
+		if (!alreadyHadACollision
+			&& frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]
+			&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
+			frog->resetFroggerPosition();
+			increaseScore();
+			alreadyHadACollision = true;
+		}
+	}
+
+	if (alreadyHadACollision){
+		camera->update(camState, mouseState);
+	}
+}
+
+void collisionTimer(int value)
+{
+	collisionDetector();
+
+	glutTimerFunc(50, collisionTimer, 0);
 }
 
 void moveCharacters(int value)
@@ -200,21 +305,23 @@ void moveFrog()
 		frogJump = 0;
 	}
 	else if (frogJump == 3){
-		frog->move(-1.0f, 0.0f);
+		frog->move(-1.1f, 0.0f);
 		frogJump = 0;
 	}
 	else if (frogJump == 4){
-		frog->move(1.0f, 0.0f);
+		frog->move(1.1f, 0.0f);
 		frogJump = 0;
 	}
+
+	collisionDetector();
 }
 
 void drawObjects()
 {
-	border->draw();
-	border2->draw();
-	margin->draw();
-	margin2->draw();
+	upperBorder->draw();
+	bottomBorder->draw();
+	bottomMargin->draw();
+	upperMargin->draw();
 	road->draw();
 	river->draw();
 
@@ -242,12 +349,12 @@ void drawObjects()
 
 void initObjects()
 {
-	margin = new Margin(vsml, &shader, 0.0f, 1.2f, 0.0f);
-	margin2 = new Margin(vsml, &shader, 0.0f, 6.0f, 0.0f);
+	bottomMargin = new Margin(vsml, &shader, 0.0f, 1.2f, 0.0f);
+	upperMargin = new Margin(vsml, &shader, 0.0f, 6.0f, 0.0f);
 	river = new River(vsml, &shader, 0.0f, 3.6f, -0.25f);
 
-	border = new Border(vsml, &shader, 0.0f, 0.0f, 0.0f);
-	border2 = new Border(vsml, &shader, 0.0f, -6.0f, 0.0f);
+	upperBorder = new Border(vsml, &shader, 0.0f, 0.0f, 0.0f);
+	bottomBorder = new Border(vsml, &shader, 0.0f, -6.0f, 0.0f);
 	road = new Road(vsml, &shader, 0.0f, -3.0f, 0.0f);
 
 	for (int i = 0; i < NUM_LANE; i++)
@@ -335,18 +442,7 @@ void renderScene(void) {
 	}
 	//draws all objects on scene
 	drawObjects();
-
-	string result = "LIVES:";
-	string lives = "lll ";
-	if (camState == 1)
-		glRasterPos2f(95, 89.75);
-	else if (camState == 2)
-		glRasterPos3f(frog->getPosition()->getX() + 124, 100, 30);
-	else glRasterPos3f(frog->getPosition()->getX() + 46, 9, 43.60);
-
-	for (int i = 0; i < (int)result.length(); i++)
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, result[i]);   //Desenha a string no HUD
-
+	
 	//swap buffers
 	glutSwapBuffers();
 
@@ -431,7 +527,7 @@ void giveLife(int value)
 	}
 	
 
-	glutTimerFunc(2000, giveLife, 0);
+	glutTimerFunc(1000, giveLife, 0);
 }
 
 void idle(){
@@ -447,39 +543,51 @@ void processKeys(unsigned char key, int xx, int yy)
 {
 	switch (key) {
 
-	case 49:
+	case 32: // !
+	case 49: // 1
 		camState = 1;
 		camera->update(camState, mouseState);
 		break;
 
-	case 50:
+	case 34: // "
+	case 50: // 2
 		camState = 2;
 		camera->update(camState, mouseState);
 		break;
 
-	case 51:
+	case 35: // #
+	case 51: // 3
 		camState = 3;
 		camera->update(camState, mouseState);
 		break;
 
-	case 113:
+	case 81: // Q
+	case 113: // q
 		hasFrogCamMoved = true;
 		frogJump = 1;
 		break;
 
-	case 97:
+	case 65: // A
+	case 97: // a
 		hasFrogCamMoved = true;
 		frogJump = 2;
 		break;
 
-	case 111:
+	case 79: // O
+	case 111:// o 
 		hasFrogCamMoved = true;
 		frogJump = 3;
 		break;
 
-	case 112:
+	case 80:  // P
+	case 112: // p
 		hasFrogCamMoved = true;
 		frogJump = 4;
+		break;
+	
+	case 82: // R
+	case 114: // r
+		resetGame();
 		break;
 	}
 	
@@ -524,10 +632,10 @@ void processMouseButtons(int button, int state, int xx, int yy)
 			}
 			else {
 				if (yy - startY > 0){
-					frog->move(0.0, 1.0);
+					frog->move(0.0, -1.0);
 				}
 				else{
-					frog->move(0.0, -1.0);
+					frog->move(0.0, 1.0);
 				}
 			}
 
@@ -667,7 +775,7 @@ int main(int argc, char **argv)
 	glutTimerFunc(0, moveCharacters, 0);
 	glutTimerFunc(10000, speedUpCharacters, 0);
 	glutTimerFunc(0, giveLife, 0);
-	glutTimerFunc(25, collisionDetector, 0);
+	glutTimerFunc(25, collisionTimer, 0);
 
 	initObjects();
 

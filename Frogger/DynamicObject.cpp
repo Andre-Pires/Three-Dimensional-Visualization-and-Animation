@@ -3,9 +3,10 @@
 
 
 
-DynamicObject::DynamicObject()
+DynamicObject::DynamicObject(float x, float y, float z)
 {
 	alive = false;
+	initialPosition = new Vector3D(x,y,z);
 }
 
 
@@ -100,4 +101,10 @@ vector<float> DynamicObject::getCharBoundaries()
 	vector<float> bounds = { upperBoundX, lowerBoundX, upperBoundY, lowerBoundY};
 
 	return bounds;
+}
+
+void DynamicObject::resetCharacter()
+{
+	setAlive(false);
+	setPosition(initialPosition->getX(), initialPosition->getY(), initialPosition->getZ());
 }

@@ -163,6 +163,7 @@ Margin::Margin(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
 	this->setScale(26.0f, 1.2f, 1.0f);
 	this->setShader(shader);
 	this->setVSML(vsml);
+	this->setSceneryBoundaries(13.0f, 0.6f);
 
 	glGenVertexArrays(1, &vaoMargin);
 	glBindVertexArray(vaoMargin);

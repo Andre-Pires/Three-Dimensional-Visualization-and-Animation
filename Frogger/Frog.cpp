@@ -278,7 +278,7 @@ unsigned int faceIndexBody[] = {
 };
 
 
-Frog::Frog(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
+Frog::Frog(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z) : DynamicObject(x, y, z)
 {
 	VSResSurfRevLib surfRev;
 
@@ -569,14 +569,24 @@ void Frog::move(float x, float y)
 	}
 }	
 
+int Frog::getLives()
+{
+	return lives;
+}
+
 void Frog::loseLife()
 {
 	lives--;
-	this->setPosition(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ());
+	this->resetFroggerPosition();
 }
 
-void Frog::resetFrogger()
+void Frog::resetCharacter()
 {
 	lives = 5;
+	this->resetFroggerPosition();
+}
+
+void Frog::resetFroggerPosition()
+{
 	this->setPosition(initialPosition.getX(), initialPosition.getY(), initialPosition.getZ());
 }

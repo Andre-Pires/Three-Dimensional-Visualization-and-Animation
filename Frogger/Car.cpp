@@ -148,7 +148,7 @@ unsigned int faceIndexCar[] = {
 	20, 22, 23
 };
 
-Car::Car(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
+Car::Car(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z) : DynamicObject(x, y, z)
 {
 	VSResSurfRevLib surfRev;
 

@@ -28,6 +28,8 @@ public:
 	Frog(VSMathLib *vsml, VSShaderLib * shader, float x, float y, float z);
 	~Frog();
 	void loseLife();
-	void resetFrogger();
+	void resetFroggerPosition();
+	int getLives();
+	void resetCharacter();
 };
 

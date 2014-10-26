@@ -187,7 +187,7 @@ unsigned int faceIndexBus[] = {
 
 
 
-Bus::Bus(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z)
+Bus::Bus(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z) : DynamicObject(x, y, z)
 {
 
 	VSResSurfRevLib surfRev;

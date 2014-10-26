@@ -24,18 +24,6 @@ void Camera::update(int camState, int mouseState)
 		vsml->ortho(-8.0f*ratio, 8.0f*ratio, -8.0f, 8.0f, -6.0f, 6.0f);
 		vsml->loadIdentity(VSMathLib::VIEW);
 		vsml->loadIdentity(VSMathLib::MODEL);
-		string menu = "Hello!";
-
-		int len = menu.length();
-
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		glLoadIdentity();
-		glRasterPos2i(10, 1014);  // move in 10 pixels from the left and bottom edges
-		for (int i = 0; i < len; ++i) {
-			glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, menu[i]);
-		}
-		glPopMatrix();
 	}
 	else if (camState == 2){
 		vsml->loadIdentity(VSMathLib::PROJECTION);
