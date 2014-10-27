@@ -399,7 +399,7 @@ void Frog::draw()
 
 	// head
 	getVSML()->pushMatrix(VSMathLib::MODEL);
-	getVSML()->translate(0.0f, 0.35, 0.0);
+	getVSML()->translate(0.0f, 0.35, 0.0f);
 	getVSML()->scale(0.6f, 0.3f, 0.3f);
 
 	// pyramid

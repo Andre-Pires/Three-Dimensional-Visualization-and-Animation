@@ -20,7 +20,7 @@ public:
 	void update(int camState, int mouseState);
 	void computeProjectionMatrix();
 	void computeVisualizationMatrix();
-	void setRatio(float ratio);
+	void setRatio(double ratio);
 	void setAt(float x, float y, float z);
 };
 

@@ -3,12 +3,18 @@
 
 
 
-DynamicObject::DynamicObject(float x, float y, float z)
+DynamicObject::DynamicObject(float x, float y, float z, float speed)
 {
 	alive = false;
 	initialPosition = new Vector3D(x,y,z);
+	initialSpeed = speed;
 }
 
+DynamicObject::DynamicObject(float x, float y, float z)
+{
+	alive = false;
+	initialPosition = new Vector3D(x, y, z);
+}
 
 DynamicObject::~DynamicObject()
 {

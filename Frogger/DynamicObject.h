@@ -16,10 +16,11 @@ class DynamicObject : public GameObject
 	float leftMoveBound, rightMoveBound;
 	float lengthCharBound, widthCharBound;
 	bool alive;
-
+	float initialSpeed;
 public:
 	
 
+	DynamicObject(float x, float y, float z, float speed);
 	DynamicObject(float x, float y, float z);
 	~DynamicObject();
 	float getSpeed();

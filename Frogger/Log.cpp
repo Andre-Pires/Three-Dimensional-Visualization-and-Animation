@@ -4,7 +4,7 @@ int verticeCountLog = 24;
 int faceCountLog = 12;
 
 
-Log::Log(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z) : DynamicObject(x, y, z)
+Log::Log(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z) : DynamicObject(x, y, z, 0.07f)
 {
 	VSResSurfRevLib surfRev;
 

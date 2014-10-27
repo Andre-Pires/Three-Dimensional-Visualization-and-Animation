@@ -150,7 +150,7 @@ unsigned int faceIndexTruck[] = {
 
 
 
-Truck::Truck(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z) : DynamicObject(x, y, z)
+Truck::Truck(VSMathLib *vsml, VSShaderLib *shader, float x, float y, float z) : DynamicObject(x, y, z, 0.075f)
 {
 	VSResSurfRevLib surfRev;
 

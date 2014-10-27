@@ -169,7 +169,7 @@ unsigned int faceIndexTurtle[] = {
 };
 
 
-Turtle::Turtle(VSMathLib *vsml, VSShaderLib * shader, float x, float y, float z) : DynamicObject(x, y, z)
+Turtle::Turtle(VSMathLib *vsml, VSShaderLib * shader, float x, float y, float z) : DynamicObject(x, y, z, 0.03f)
 {
 	VSResSurfRevLib surfRev;
 

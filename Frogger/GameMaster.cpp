@@ -100,9 +100,9 @@ void resetCharacters()
 
 		if (buses[i]->isAlive())
 			buses[i]->resetCharacter();
+	}
 
 		frog->resetCharacter();
-	}
 }
 
 void speedUpCharacters(int value)
@@ -408,7 +408,7 @@ GLuint setupShaders() {
 
 void changeSize(int w, int h) {
 
-	float ratio;
+	double ratio;
 	// Prevent a divide by zero, when window is too short
 	// (you cant make a window of zero width).
 	if (h == 0)
@@ -442,7 +442,25 @@ void renderScene(void) {
 	}
 	//draws all objects on scene
 	drawObjects();
-	
+
+
+//TODO Fix font display !!!!
+
+// 	camera->update(1, mouseState);
+// 	
+// 	// Create a pixmap font from a TrueType file.
+// 	FTGLPixmapFont font("/home/user/Arial.ttf");
+// 	// If something went wrong, bail out.
+// 	if (font.Error())
+// 		return;
+// 
+// 	// Set the font size and render a small text.
+// 	font.FaceSize(72);
+// 	font.Render("Hello World!");
+// 
+// 	camera->update(camState, mouseState);
+
+
 	//swap buffers
 	glutSwapBuffers();
 
@@ -768,7 +786,7 @@ int main(int argc, char **argv)
 	initVSL();
 
 	//creation of random seed
-	srand(time(NULL));
+	srand((unsigned int) time(NULL));
 
 	glutTimerFunc(0, timedDisplay, 0);
 	glutTimerFunc(0, timer, 0);

@@ -60,9 +60,9 @@ void Camera::update(int camState, int mouseState)
 	glutPostRedisplay();
 }
 
-void Camera::setRatio(float ratio)
+void Camera::setRatio(double ratio)
 {
-	this->ratio = ratio;
+	this->ratio = (float) ratio;
 }
 
 void Camera::setAt(float x, float y, float z)
