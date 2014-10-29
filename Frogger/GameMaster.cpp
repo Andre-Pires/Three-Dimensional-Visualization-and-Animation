@@ -29,7 +29,8 @@ River * river;
 /** Movables **/
 Frog * frog;
 Truck * trucks[NUM_LANE];
-Turtle * turtles[NUM_LANE];
+Turtle * turtlesTop[NUM_LANE];
+Turtle * turtlesBottom[NUM_LANE];
 Car * cars[NUM_LANE];
 Bus * buses[NUM_LANE];
 Log * stems[NUM_LANE];
@@ -86,19 +87,16 @@ void resetCharacters()
 
 	for (int i = 0; i < NUM_LANE; i++)
 	{
-		if (stems[i]->isAlive())
 			stems[i]->resetCharacter();
 
-		if (turtles[i]->isAlive())
-			turtles[i]->resetCharacter();
+			turtlesBottom[i]->resetCharacter();
 
-		if (trucks[i]->isAlive())
+			turtlesTop[i]->resetCharacter();
+
 			trucks[i]->resetCharacter();
 
-		if (cars[i]->isAlive())
 			cars[i]->resetCharacter();
 
-		if (buses[i]->isAlive())
 			buses[i]->resetCharacter();
 	}
 
@@ -110,7 +108,8 @@ void speedUpCharacters(int value)
 
 	for (int i = 0; i < NUM_LANE; i++)
 	{
-		turtles[i]->speedUp();
+		turtlesTop[i]->speedUp();
+		turtlesBottom[i]->speedUp();
 		stems[i]->speedUp();
 		trucks[i]->speedUp();
 		cars[i]->speedUp();
@@ -214,12 +213,28 @@ void collisionDetector()
 
 		for (int i = 0; i < NUM_LANE; i++)
 		{
-			if (turtles[i]->isAlive()){
-				vector<float> objBounds = turtles[i]->getCharBoundaries();
+			if (turtlesBottom[i]->isAlive()){
+				vector<float> objBounds = turtlesBottom[i]->getCharBoundaries();
 
 				if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]
 					&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
-					frog->setPosition(turtles[i]->getPosition()->getX(), turtles[i]->getPosition()->getY(), frog->getPosition()->getZ());
+					frog->setPosition(turtlesBottom[i]->getPosition()->getX(), turtlesBottom[i]->getPosition()->getY(), frog->getPosition()->getZ());
+					alreadyHadACollision = true;
+				}
+			}
+		}
+	}
+
+	if (!alreadyHadACollision)	{
+
+		for (int i = 0; i < NUM_LANE; i++)
+		{
+			if (turtlesTop[i]->isAlive()){
+				vector<float> objBounds = turtlesTop[i]->getCharBoundaries();
+
+				if (frogBounds[1] <= objBounds[0] && frogBounds[0] >= objBounds[1]
+					&& frogBounds[3] <= objBounds[2] && frogBounds[2] >= objBounds[3]){
+					frog->setPosition(turtlesTop[i]->getPosition()->getX(), turtlesTop[i]->getPosition()->getY(), frog->getPosition()->getZ());
 					alreadyHadACollision = true;
 				}
 			}
@@ -277,8 +292,11 @@ void moveCharacters(int value)
 		if(stems[i]->isAlive())
 			stems[i]->move();
 
-		if (turtles[i]->isAlive()) 
-			turtles[i]->move();
+		if (turtlesTop[i]->isAlive())
+			turtlesTop[i]->move();
+
+		if (turtlesBottom[i]->isAlive()) 
+			turtlesBottom[i]->move();
 
 		if (trucks[i]->isAlive())
 			trucks[i]->move();
@@ -333,8 +351,11 @@ void drawObjects()
 		if (stems[i]->isAlive())
 			stems[i]->draw();
 
-		if (turtles[i]->isAlive())
-			turtles[i]->draw();
+		if (turtlesBottom[i]->isAlive())
+			turtlesBottom[i]->draw();
+
+		if (turtlesTop[i]->isAlive())
+			turtlesTop[i]->draw();
 
 		if (trucks[i]->isAlive())
 			trucks[i]->draw();
@@ -363,7 +384,8 @@ void initObjects()
 		cars[i] = new Car(vsml, &shader, 12.2f, -2.4f, 1.1f);
 		trucks[i] = new Truck(vsml, &shader, -12.0f, -1.2f, 1.4f);
 		stems[i] = new Log(vsml, &shader, -12.0f, 3.6f, 0.0f);
-		turtles[i] = new Turtle(vsml, &shader, 12.5f, 2.4f, 0.5f);
+		turtlesBottom[i] = new Turtle(vsml, &shader, 12.5f, 2.4f, 0.5f);
+		turtlesTop[i] = new Turtle(vsml, &shader, -12.5f, 4.8f, 0.5f);
 	}
 
 
@@ -443,24 +465,6 @@ void renderScene(void) {
 	//draws all objects on scene
 	drawObjects();
 
-
-//TODO Fix font display !!!!
-
-// 	camera->update(1, mouseState);
-// 	
-// 	// Create a pixmap font from a TrueType file.
-// 	FTGLPixmapFont font("/home/user/Arial.ttf");
-// 	// If something went wrong, bail out.
-// 	if (font.Error())
-// 		return;
-// 
-// 	// Set the font size and render a small text.
-// 	font.FaceSize(72);
-// 	font.Render("Hello World!");
-// 
-// 	camera->update(camState, mouseState);
-
-
 	//swap buffers
 	glutSwapBuffers();
 
@@ -491,17 +495,17 @@ void giveLife(int value)
 {
 	int randomValue = rand() % 100;
 
-	if (randomValue < 20){
+	if (randomValue < 30){
 		for (int i = 0; i < NUM_LANE; i++)
 		{
-			if (!turtles[i]->isAlive()){
-				turtles[i]->setAlive(true);
+			if (!turtlesBottom[i]->isAlive()){
+				turtlesBottom[i]->setAlive(true);
 				break;
 			}
 		}
 	}
 
-	if (randomValue >=20 && randomValue < 40){
+	if (randomValue >=30 && randomValue < 55){
 		for (int i = 0; i < NUM_LANE; i++)
 		{
 			if (!stems[i]->isAlive()){
@@ -511,7 +515,18 @@ void giveLife(int value)
 		}
 	}
 
-	if (randomValue >= 40 && randomValue < 60){
+	if (randomValue >= 70 && randomValue < 100){
+
+		for (int i = 0; i < NUM_LANE; i++)
+		{
+			if (!turtlesTop[i]->isAlive()){
+				turtlesTop[i]->setAlive(true);
+				break;
+			}
+		}
+	}
+
+	if (randomValue < 25){
 
 		for (int i = 0; i < NUM_LANE; i++)
 		{
@@ -522,7 +537,7 @@ void giveLife(int value)
 		}
 	}
 
-	if (randomValue >= 60 && randomValue < 80){
+	if (randomValue >= 25 && randomValue < 50){
 
 		for (int i = 0; i < NUM_LANE; i++)
 		{
@@ -533,7 +548,8 @@ void giveLife(int value)
 		}
 	}
 
-	if (randomValue >= 80 && randomValue < 100){
+
+	if (randomValue >= 50 && randomValue < 75){
 		
 		for (int i = 0; i < NUM_LANE; i++)
 		{

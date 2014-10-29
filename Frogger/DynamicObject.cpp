@@ -113,4 +113,5 @@ void DynamicObject::resetCharacter()
 {
 	setAlive(false);
 	setPosition(initialPosition->getX(), initialPosition->getY(), initialPosition->getZ());
+	setSpeed(initialSpeed);
 }
